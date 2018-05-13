@@ -10,9 +10,8 @@ public class SpringBasedSelector extends AbstractSelector implements Application
     private ApplicationContext applicationContext;
 
     @Override
-    protected MatcherProcessor getIndicatorProcessor(
+    protected MatcherProcessor getMatcherProcessor(
             Class<? extends MatcherProcessor> processorClass) {
-
         return applicationContext.getBean(processorClass);
     }
 

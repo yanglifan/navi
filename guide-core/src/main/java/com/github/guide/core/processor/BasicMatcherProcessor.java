@@ -9,7 +9,7 @@ import com.github.guide.core.MatchResult;
  */
 public class BasicMatcherProcessor implements MatcherProcessor<BasicMatcher> {
     @Override
-    public MatchResult process(Object request, BasicMatcher indicatorAnnotation) {
+    public MatchResult process(Object request, BasicMatcher matcherAnnotation) {
         return null;
     }
 }

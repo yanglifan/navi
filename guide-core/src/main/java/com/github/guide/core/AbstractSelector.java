@@ -9,6 +9,7 @@ public abstract class AbstractSelector implements Selector {
 
     public <T> T select(Object request, Class<T> beanClass) {
         Iterable<T> candidates = findBeansByType(beanClass);
+        SelectStrategy<T> selectStrategy = getSelectStrategy();
         for (T candidate : candidates) {
             Annotation[] annotations = candidate.getClass().getAnnotations();
             for (Annotation annotation : annotations) {
@@ -18,21 +19,26 @@ public abstract class AbstractSelector implements Selector {
                     continue;
                 }
 
-                MatcherProcessor<Annotation> indicatorProcessor =
-                        getIndicatorProcessor(matcherType.processor());
+                MatcherProcessor<Annotation> matcherProcessor =
+                        getMatcherProcessor(matcherType.processor());
 
-                if (indicatorProcessor == null) {
+                if (matcherProcessor == null) {
                     throw new NullPointerException("Cannot find the indicator processor");
                 }
 
-                indicatorProcessor.process(request, annotation);
+                MatchResult matchResult = matcherProcessor.process(request, annotation);
+                selectStrategy.addMatchResult(matchResult);
             }
         }
-        return null;
+        return selectStrategy.getWinner();
     }
 
-    protected abstract MatcherProcessor<Annotation> getIndicatorProcessor(
+    protected abstract MatcherProcessor<Annotation> getMatcherProcessor(
             Class<? extends MatcherProcessor> processorClass);
 
     protected abstract <T> Iterable<T> findBeansByType(Class<T> beanClass);
+
+    protected <T> SelectStrategy<T> getSelectStrategy() {
+        return new ScoreSelectStrategy<T>();
+    }
 }
