@@ -5,62 +5,67 @@ package com.github.guide.core;
  */
 public class ScoreSelectStrategy<T> implements SelectStrategy<T> {
 
-    private ScoreMatchResult currentScoreMatchResult;
+    private ScoreMatchResult currentWinner;
+    private ScoreMatchResult currentResult;
 
     @Override
     public void addMatchResult(MatchResult<T> matchResult) {
-        ScoreMatchResult scoreMatchResult = new ScoreMatchResult(matchResult);
-        setMatchScore(matchResult, scoreMatchResult);
-        changeCurrentResult(scoreMatchResult);
-    }
+        currentResult = new ScoreMatchResult(matchResult);
 
-    @Override
-    public T getWinner() {
-        if (currentScoreMatchResult == null) {
-            return null;
-        }
-
-        return currentScoreMatchResult.matchResult.getCandidate();
-    }
-
-    private void changeCurrentResult(ScoreMatchResult scoreMatchResult) {
-        if (isFirstValidMatchResult(scoreMatchResult)) {
-            currentScoreMatchResult = scoreMatchResult;
-        }
-
-        if (isScoreHigherThanCurrentOne(scoreMatchResult)) {
-            currentScoreMatchResult = scoreMatchResult;
-        }
-    }
-
-    private boolean isScoreHigherThanCurrentOne(ScoreMatchResult scoreMatchResult) {
-        return currentScoreMatchResult != null && scoreMatchResult.score >= currentScoreMatchResult.score;
-    }
-
-    private boolean isFirstValidMatchResult(ScoreMatchResult scoreMatchResult) {
-        return currentScoreMatchResult == null && scoreMatchResult.score > -1;
-    }
-
-    private void setMatchScore(MatchResult matchResult, ScoreMatchResult scoreMatchResult) {
-        switch (matchResult.getResultType()) {
+        switch (currentResult.matchResult.getResultType()) {
             case ACCEPT:
-                scoreMatchResult.score++;
+                currentResult.score++;
                 break;
             case NEUTRAL:
                 // Not change score
                 break;
             case REJECT:
-                scoreMatchResult.score = -1;
+                currentResult.score = -1;
                 break;
         }
     }
 
+    @Override
+    public void addCandidate(T candidate) {
+        currentResult.candidate = candidate;
+
+        if (isFirstValidMatchResult()) {
+            currentWinner = currentResult;
+        }
+
+        if (isScoreHigherThanCurrentOne()) {
+            currentWinner = currentResult;
+        }
+    }
+
+    @Override
+    public T getWinner() {
+        if (currentWinner == null) {
+            return null;
+        }
+
+        return currentWinner.candidate;
+    }
+
     private class ScoreMatchResult {
         private int score;
+        private T candidate;
         private MatchResult<T> matchResult;
 
         private ScoreMatchResult(MatchResult<T> matchResult) {
             this.matchResult = matchResult;
         }
+
+        ScoreMatchResult(T candidate) {
+            this.candidate = candidate;
+        }
+    }
+
+    private boolean isScoreHigherThanCurrentOne() {
+        return currentWinner != null && currentResult.score >= currentWinner.score;
+    }
+
+    private boolean isFirstValidMatchResult() {
+        return currentWinner == null && currentResult.score > -1;
     }
 }

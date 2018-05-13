@@ -16,6 +16,7 @@ public class SpringBasedSelectorTests {
         AnnotationConfigApplicationContext applicationContext =
                 new AnnotationConfigApplicationContext();
         applicationContext.register(TestConfiguration.class);
+        applicationContext.register(MatcherConfiguration.class);
         applicationContext.refresh();
         selector = applicationContext.getBean(SpringBasedSelector.class);
     }

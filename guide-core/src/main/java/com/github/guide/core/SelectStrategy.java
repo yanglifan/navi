@@ -6,5 +6,7 @@ package com.github.guide.core;
 public interface SelectStrategy<T> {
     void addMatchResult(MatchResult<T> matchResult);
 
+    void addCandidate(T candidate);
+
     T getWinner();
 }

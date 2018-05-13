@@ -16,7 +16,7 @@ public class SpringBasedSelector extends AbstractSelector implements Application
     }
 
     @Override
-    protected <T> Iterable<T> findBeansByType(Class<T> beanClass) {
+    protected <T> Iterable<T> findCandidatesByType(Class<T> beanClass) {
         return applicationContext.getBeansOfType(beanClass).values();
     }
 

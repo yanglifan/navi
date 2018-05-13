@@ -5,26 +5,25 @@ package com.github.guide.core;
  */
 public class MatchResult<T> {
     private ResultType resultType = ResultType.NEUTRAL;
-    private T candidate;
 
 
-    public MatchResult(T candidate) {
-        this.candidate = candidate;
+    private MatchResult(ResultType resultType) {
+        this.resultType = resultType;
+    }
+
+    public static <S> MatchResult<S> accept() {
+        return new MatchResult<>(ResultType.ACCEPT);
+    }
+
+    public static <S> MatchResult<S> reject() {
+        return new MatchResult<>(ResultType.REJECT);
     }
 
     enum ResultType {
         ACCEPT, NEUTRAL, REJECT
     }
 
-    public T getCandidate() {
-        return candidate;
-    }
-
     public ResultType getResultType() {
         return resultType;
-    }
-
-    public void setResultType(ResultType resultType) {
-        this.resultType = resultType;
     }
 }
