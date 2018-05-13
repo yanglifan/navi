@@ -1,7 +1,7 @@
 package com.github.guide.spring;
 
 import com.github.guide.Handler;
-import com.github.guide.core.BasicIndicator;
+import com.github.guide.core.BasicMatcher;
 import com.github.guide.core.Selector;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,12 +17,12 @@ public class TestConfiguration {
         return new SpringBasedSelector();
     }
 
-    @BasicIndicator(paramPath = "username", targetValue = "foo")
+    @BasicMatcher(paramPath = "username", targetValue = "foo")
     @Component
     public static class FooHandler implements Handler {
     }
 
-    @BasicIndicator(paramPath = "username", targetValue = "bar")
+    @BasicMatcher(paramPath = "username", targetValue = "bar")
     @Component
     public static class BarHandler implements Handler {
     }

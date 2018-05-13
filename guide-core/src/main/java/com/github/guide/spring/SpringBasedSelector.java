@@ -1,7 +1,7 @@
 package com.github.guide.spring;
 
 import com.github.guide.core.AbstractSelector;
-import com.github.guide.core.IndicatorProcessor;
+import com.github.guide.core.MatcherProcessor;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -10,8 +10,8 @@ public class SpringBasedSelector extends AbstractSelector implements Application
     private ApplicationContext applicationContext;
 
     @Override
-    protected IndicatorProcessor getIndicatorProcessor(
-            Class<? extends IndicatorProcessor> processorClass) {
+    protected MatcherProcessor getIndicatorProcessor(
+            Class<? extends MatcherProcessor> processorClass) {
 
         return applicationContext.getBean(processorClass);
     }

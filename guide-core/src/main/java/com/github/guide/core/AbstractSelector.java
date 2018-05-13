@@ -12,14 +12,14 @@ public abstract class AbstractSelector implements Selector {
         for (T candidate : candidates) {
             Annotation[] annotations = candidate.getClass().getAnnotations();
             for (Annotation annotation : annotations) {
-                IndicatorType indicatorType =
-                        annotation.getClass().getAnnotation(IndicatorType.class);
-                if (indicatorType == null) {
+                MatcherType matcherType =
+                        annotation.getClass().getAnnotation(MatcherType.class);
+                if (matcherType == null) {
                     continue;
                 }
 
-                IndicatorProcessor<Annotation> indicatorProcessor =
-                        getIndicatorProcessor(indicatorType.processor());
+                MatcherProcessor<Annotation> indicatorProcessor =
+                        getIndicatorProcessor(matcherType.processor());
 
                 if (indicatorProcessor == null) {
                     throw new NullPointerException("Cannot find the indicator processor");
@@ -31,8 +31,8 @@ public abstract class AbstractSelector implements Selector {
         return null;
     }
 
-    protected abstract IndicatorProcessor<Annotation> getIndicatorProcessor(
-            Class<? extends IndicatorProcessor> processorClass);
+    protected abstract MatcherProcessor<Annotation> getIndicatorProcessor(
+            Class<? extends MatcherProcessor> processorClass);
 
     protected abstract <T> Iterable<T> findBeansByType(Class<T> beanClass);
 }

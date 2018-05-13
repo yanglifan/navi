@@ -3,7 +3,7 @@ package com.github.guide.core;
 /**
  * @author Yang Lifan
  */
-public class ProcessResult {
+public class MatchResult {
     private ResultType resultType;
 
     enum ResultType {
