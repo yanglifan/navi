@@ -1,15 +1,24 @@
 package com.github.guide.spring;
 
-import com.github.guide.core.Selector;
+import com.github.guide.core.AbstractSelector;
+import com.github.guide.core.IndicatorProcessor;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-public class SpringBasedSelector implements Selector, ApplicationContextAware {
+public class SpringBasedSelector extends AbstractSelector implements ApplicationContextAware {
     private ApplicationContext applicationContext;
 
-    public <T> T select(Object request, Class<T> targetClass) {
-        return null;
+    @Override
+    protected IndicatorProcessor getIndicatorProcessor(
+            Class<? extends IndicatorProcessor> processorClass) {
+
+        return applicationContext.getBean(processorClass);
+    }
+
+    @Override
+    protected <T> Iterable<T> findBeansByType(Class<T> beanClass) {
+        return applicationContext.getBeansOfType(beanClass).values();
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
