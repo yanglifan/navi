@@ -9,9 +9,12 @@ public abstract class AbstractSelector implements Selector {
 
     public <T> T select(Object request, Class<T> candidateType) {
         Iterable<T> candidates = findCandidatesByType(candidateType);
+
         SelectStrategy<T> selectStrategy = getSelectStrategy();
+
         for (T candidate : candidates) {
             Annotation[] annotations = candidate.getClass().getAnnotations();
+
             for (Annotation annotation : annotations) {
                 MatchResult<T> matchResult = doMatch(request, annotation);
 
