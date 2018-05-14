@@ -4,7 +4,7 @@ package com.github.guide.core;
  * @author Yang Lifan
  */
 public class MatchResult<T> {
-    private ResultType resultType = ResultType.NEUTRAL;
+    private ResultType resultType;
 
 
     private MatchResult(ResultType resultType) {
@@ -19,7 +19,7 @@ public class MatchResult<T> {
         return new MatchResult<>(ResultType.REJECT);
     }
 
-    enum ResultType {
+    public enum ResultType {
         ACCEPT, NEUTRAL, REJECT
     }
 
