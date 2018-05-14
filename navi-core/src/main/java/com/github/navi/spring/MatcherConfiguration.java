@@ -1,6 +1,6 @@
 package com.github.navi.spring;
 
-import com.github.navi.core.processor.EqualsMatcherProcessor;
+import com.github.navi.core.matcher.EqualsMatcher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MatcherConfiguration {
     @Bean
-    public EqualsMatcherProcessor equalsMatcherProcessor() {
-        return new EqualsMatcherProcessor();
+    public EqualsMatcher.Processor equalsMatcherProcessor() {
+        return new EqualsMatcher.Processor();
     }
 }

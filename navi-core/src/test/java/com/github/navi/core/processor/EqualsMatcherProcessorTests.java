@@ -1,6 +1,6 @@
 package com.github.navi.core.processor;
 
-import com.github.navi.core.EqualsMatcher;
+import com.github.navi.core.matcher.EqualsMatcher;
 import com.github.navi.core.MatchResult;
 import org.junit.Test;
 
@@ -8,9 +8,9 @@ import java.lang.annotation.Annotation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EqualsMatcherProcessorTest {
+public class EqualsMatcherProcessorTests {
 
-    private EqualsMatcherProcessor equalsMatcherProcessor = new EqualsMatcherProcessor();
+    private EqualsMatcher.Processor equalsMatcherProcessor = new EqualsMatcher.Processor();
 
     private EqualsMatcher usernameEqualsStark = new EqualsMatcher() {
         @Override

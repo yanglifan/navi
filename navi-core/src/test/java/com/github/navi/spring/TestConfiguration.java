@@ -1,7 +1,7 @@
 package com.github.navi.spring;
 
 import com.github.navi.Handler;
-import com.github.navi.core.EqualsMatcher;
+import com.github.navi.core.matcher.EqualsMatcher;
 import com.github.navi.core.Selector;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
