@@ -1,10 +1,12 @@
 package com.github.navi.core.processor;
 
-import com.github.navi.core.matcher.EqualsMatcher;
 import com.github.navi.core.MatchResult;
+import com.github.navi.core.matcher.EqualsMatcher;
 import org.junit.Test;
 
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,6 +37,15 @@ public class EqualsMatcherProcessorTests {
         TestRequest testRequest = new TestRequest("stark");
         MatchResult<?> matchResult =
                 equalsMatcherProcessor.process(testRequest, usernameEqualsStark);
+        assertThat(matchResult.getResultType()).isEqualTo(MatchResult.ResultType.ACCEPT);
+    }
+
+    @Test
+    public void doMatchWithMapRequest() {
+        Map<String, String> mapRequest = new HashMap<>();
+        mapRequest.put("username", "stark");
+        MatchResult<?> matchResult =
+                equalsMatcherProcessor.process(mapRequest, usernameEqualsStark);
         assertThat(matchResult.getResultType()).isEqualTo(MatchResult.ResultType.ACCEPT);
     }
 
