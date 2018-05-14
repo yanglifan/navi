@@ -27,6 +27,10 @@ public class ScoreSelectStrategy<T> implements SelectStrategy<T> {
 
     @Override
     public void addCandidate(T candidate) {
+        if (currentResult == null) {
+            return;
+        }
+
         currentResult.candidate = candidate;
 
         if (isFirstValidMatchResult()) {
