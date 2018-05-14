@@ -55,10 +55,6 @@ public class ScoreSelectStrategy<T> implements SelectStrategy<T> {
         private ScoreMatchResult(MatchResult<T> matchResult) {
             this.matchResult = matchResult;
         }
-
-        ScoreMatchResult(T candidate) {
-            this.candidate = candidate;
-        }
     }
 
     private boolean isScoreHigherThanCurrentOne() {
