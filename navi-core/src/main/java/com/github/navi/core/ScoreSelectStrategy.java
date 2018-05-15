@@ -9,10 +9,10 @@ public class ScoreSelectStrategy<T> implements SelectStrategy<T> {
     private ScoreMatchResult currentResult;
 
     @Override
-    public void addMatchResult(MatchResult<T> matchResult) {
+    public void addMatchResult(MatchResult matchResult) {
         currentResult = new ScoreMatchResult(matchResult);
 
-        switch (currentResult.matchResult.getResultType()) {
+        switch (currentResult.matchResult) {
             case ACCEPT:
                 currentResult.score++;
                 break;
@@ -54,9 +54,9 @@ public class ScoreSelectStrategy<T> implements SelectStrategy<T> {
     private class ScoreMatchResult {
         private int score;
         private T candidate;
-        private MatchResult<T> matchResult;
+        private MatchResult matchResult;
 
-        private ScoreMatchResult(MatchResult<T> matchResult) {
+        private ScoreMatchResult(MatchResult matchResult) {
             this.matchResult = matchResult;
         }
     }

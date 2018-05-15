@@ -25,19 +25,19 @@ public @interface EqualsMatcher {
 
     class Processor implements MatcherProcessor<EqualsMatcher> {
         @Override
-        public <T> MatchResult<T> process(Object request, EqualsMatcher matcherAnnotation) {
+        public MatchResult process(Object request, EqualsMatcher matcherAnnotation) {
             String paramPath = matcherAnnotation.propertyPath();
             Object property;
             try {
                 property = BeanUtils.getProperty(request, paramPath);
             } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                return MatchResult.reject();
+                return MatchResult.REJECT;
             }
 
 
             boolean isEquals = matcherAnnotation.expectValue().equals(property.toString());
 
-            return isEquals ? MatchResult.accept() : MatchResult.reject();
+            return isEquals ? MatchResult.ACCEPT : MatchResult.REJECT;
         }
     }
 }

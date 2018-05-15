@@ -35,18 +35,16 @@ public class EqualsMatcherProcessorTests {
     @Test
     public void simpleMatch() {
         TestRequest testRequest = new TestRequest("stark");
-        MatchResult<?> matchResult =
-                equalsMatcherProcessor.process(testRequest, usernameEqualsStark);
-        assertThat(matchResult.getResultType()).isEqualTo(MatchResult.ResultType.ACCEPT);
+        MatchResult matchResult = equalsMatcherProcessor.process(testRequest, usernameEqualsStark);
+        assertThat(matchResult).isEqualTo(MatchResult.ACCEPT);
     }
 
     @Test
     public void doMatchWithMapRequest() {
         Map<String, String> mapRequest = new HashMap<>();
         mapRequest.put("username", "stark");
-        MatchResult<?> matchResult =
-                equalsMatcherProcessor.process(mapRequest, usernameEqualsStark);
-        assertThat(matchResult.getResultType()).isEqualTo(MatchResult.ResultType.ACCEPT);
+        MatchResult matchResult = equalsMatcherProcessor.process(mapRequest, usernameEqualsStark);
+        assertThat(matchResult).isEqualTo(MatchResult.ACCEPT);
     }
 
     public class TestRequest {

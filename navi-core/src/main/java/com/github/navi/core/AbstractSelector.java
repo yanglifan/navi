@@ -16,7 +16,7 @@ public abstract class AbstractSelector implements Selector {
             Annotation[] annotations = candidate.getClass().getAnnotations();
 
             for (Annotation annotation : annotations) {
-                MatchResult<T> matchResult = doMatch(request, annotation);
+                MatchResult matchResult = doMatch(request, annotation);
 
                 if (matchResult == null) {
                     continue;
@@ -31,7 +31,7 @@ public abstract class AbstractSelector implements Selector {
         return selectStrategy.getWinner();
     }
 
-    private <T> MatchResult<T> doMatch(Object request, Annotation annotation) {
+    private MatchResult doMatch(Object request, Annotation annotation) {
         MatcherType matcherType =
                 annotation.annotationType().getAnnotation(MatcherType.class);
         if (matcherType == null) {
