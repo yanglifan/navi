@@ -86,9 +86,9 @@ public @interface VersionMatcher {
         private boolean isContentHigherBound(Version comparedVersion) {
             boolean isContentHigherBound;
             if (isOpenHigherBound) {
-                isContentHigherBound = comparedVersion.compareTo(higherVersion) < 0;
+                isContentHigherBound = higherVersion.compareTo(comparedVersion) > 0;
             } else {
-                isContentHigherBound = comparedVersion.compareTo(higherVersion) <= 0;
+                isContentHigherBound = higherVersion.compareTo(comparedVersion) >= 0;
             }
             return isContentHigherBound;
         }
@@ -96,25 +96,23 @@ public @interface VersionMatcher {
         private boolean isContentLowerBound(Version comparedVersion) {
             boolean isContentLowerBound;
             if (isOpenLowerBound) {
-                isContentLowerBound = comparedVersion.compareTo(lowerBound) > 0;
+                isContentLowerBound = lowerBound.compareTo(comparedVersion) < 0;
             } else {
-                isContentLowerBound = comparedVersion.compareTo(lowerBound) >= 0;
+                isContentLowerBound = lowerBound.compareTo(comparedVersion) <= 0;
             }
-
             return isContentLowerBound;
         }
     }
 
     class Version implements Comparable<Version> {
-
-
+        private boolean isAny;
         private int major;
         private int minor;
         private int patch;
 
         Version(String rawVersion) {
             if (ALL_VERSIONS.equals(rawVersion)) {
-                major = Integer.MAX_VALUE;
+                this.isAny = true;
             } else {
                 String[] versionArray = rawVersion.split("\\.");
                 major = Integer.valueOf(versionArray[0]);
@@ -126,6 +124,10 @@ public @interface VersionMatcher {
 
         @Override
         public int compareTo(Version o) {
+            if (isAny) {
+                return 0;
+            }
+
             if (this.major != o.major) {
                 return this.major - o.major;
             } else if (this.minor != o.minor) {
