@@ -1,8 +1,7 @@
 package com.github.navi.spring;
 
-import com.github.navi.Handler;
-import com.github.navi.core.matcher.EqualsMatcher;
 import com.github.navi.core.Selector;
+import com.github.navi.core.matcher.EqualsMatcher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
@@ -17,6 +16,7 @@ public class TestConfiguration {
         return new SpringBasedSelector();
     }
 
+    @SuppressWarnings("all")
     @EqualsMatcher(propertyPath = "username", expectValue = "foo")
     @Component
     static class FooHandler implements Handler {

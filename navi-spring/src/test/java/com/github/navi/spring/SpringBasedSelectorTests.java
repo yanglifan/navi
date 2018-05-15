@@ -1,6 +1,5 @@
 package com.github.navi.spring;
 
-import com.github.navi.Handler;
 import com.github.navi.core.Selector;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,10 +28,10 @@ public class SpringBasedSelectorTests {
         assertThat(handler).isInstanceOf(TestConfiguration.BarHandler.class);
     }
 
-
     public class MyRequest {
         private String username;
 
+        @SuppressWarnings("all")
         public String getUsername() {
             return username;
         }
