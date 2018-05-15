@@ -1,4 +1,4 @@
-package com.github.navi.core.processor;
+package com.github.navi.core.matcher;
 
 import com.github.navi.core.MatchResult;
 import com.github.navi.core.matcher.EqualsMatcher;
