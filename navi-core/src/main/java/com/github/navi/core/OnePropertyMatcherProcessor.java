@@ -35,6 +35,7 @@ public abstract class OnePropertyMatcherProcessor<A extends Annotation>
 	private Object getFinalResult(List<String> properties, Object result) throws IllegalAccessException,
 			InvocationTargetException, NoSuchMethodException {
 		for (String prop : properties) {
+			// TODO Do null assert
 			result = PropertyUtils.getProperty(result, prop);
 		}
 		return result;
