@@ -11,19 +11,19 @@ import org.springframework.stereotype.Component;
  */
 @Configuration
 public class TestConfiguration {
-    @Bean
-    public Selector selector() {
-        return new SpringBasedSelector();
-    }
+	@Bean
+	public Selector selector() {
+		return new SpringBasedSelector();
+	}
 
-    @SuppressWarnings("all")
-    @EqualsMatcher(propertyPath = "username", expectValue = "foo")
-    @Component
-    static class FooHandler implements Handler {
-    }
+	@SuppressWarnings("all")
+	@EqualsMatcher(propertyPath = "username", expectValue = "foo")
+	@Component
+	static class FooHandler implements Handler {
+	}
 
-    @EqualsMatcher(propertyPath = "username", expectValue = "bar")
-    @Component
-    static class BarHandler implements Handler {
-    }
+	@EqualsMatcher(propertyPath = "username", expectValue = "bar")
+	@Component
+	static class BarHandler implements Handler {
+	}
 }

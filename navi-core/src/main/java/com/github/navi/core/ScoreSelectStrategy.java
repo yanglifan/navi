@@ -5,67 +5,67 @@ package com.github.navi.core;
  */
 public class ScoreSelectStrategy<T> implements SelectStrategy<T> {
 
-    private ScoreMatchResult currentWinner;
-    private ScoreMatchResult currentResult;
+	private ScoreMatchResult currentWinner;
+	private ScoreMatchResult currentResult;
 
-    @Override
-    public void addMatchResult(MatchResult matchResult) {
-        currentResult = new ScoreMatchResult(matchResult);
+	@Override
+	public void addMatchResult(MatchResult matchResult) {
+		currentResult = new ScoreMatchResult(matchResult);
 
-        switch (currentResult.matchResult) {
-            case ACCEPT:
-                currentResult.score++;
-                break;
-            case NEUTRAL:
-                // Not change score
-                break;
-            case REJECT:
-                currentResult.score = -1;
-                break;
-        }
-    }
+		switch (currentResult.matchResult) {
+			case ACCEPT:
+				currentResult.score++;
+				break;
+			case NEUTRAL:
+				// Not change score
+				break;
+			case REJECT:
+				currentResult.score = -1;
+				break;
+		}
+	}
 
-    @Override
-    public void addCandidate(T candidate) {
-        if (currentResult == null) {
-            return;
-        }
+	@Override
+	public void addCandidate(T candidate) {
+		if (currentResult == null) {
+			return;
+		}
 
-        currentResult.candidate = candidate;
+		currentResult.candidate = candidate;
 
-        if (isFirstValidMatchResult()) {
-            currentWinner = currentResult;
-        }
+		if (isFirstValidMatchResult()) {
+			currentWinner = currentResult;
+		}
 
-        if (isScoreHigherThanCurrentOne()) {
-            currentWinner = currentResult;
-        }
-    }
+		if (isScoreHigherThanCurrentOne()) {
+			currentWinner = currentResult;
+		}
+	}
 
-    @Override
-    public T getWinner() {
-        if (currentWinner == null) {
-            return null;
-        }
+	@Override
+	public T getWinner() {
+		if (currentWinner == null) {
+			return null;
+		}
 
-        return currentWinner.candidate;
-    }
+		return currentWinner.candidate;
+	}
 
-    private class ScoreMatchResult {
-        private int score;
-        private T candidate;
-        private MatchResult matchResult;
+	private boolean isScoreHigherThanCurrentOne() {
+		return currentWinner != null && currentResult.score >= currentWinner.score;
+	}
 
-        private ScoreMatchResult(MatchResult matchResult) {
-            this.matchResult = matchResult;
-        }
-    }
+	private boolean isFirstValidMatchResult() {
+		return currentWinner == null && currentResult.score > -1;
+	}
 
-    private boolean isScoreHigherThanCurrentOne() {
-        return currentWinner != null && currentResult.score >= currentWinner.score;
-    }
+	private class ScoreMatchResult {
+		private int score;
+		private T candidate;
+		private MatchResult matchResult;
 
-    private boolean isFirstValidMatchResult() {
-        return currentWinner == null && currentResult.score > -1;
-    }
+		private ScoreMatchResult(MatchResult matchResult) {
+			this.matchResult = matchResult;
+		}
+	}
 }

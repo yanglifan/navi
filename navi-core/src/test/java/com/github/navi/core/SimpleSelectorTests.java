@@ -8,32 +8,32 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleSelectorTests {
-    @Test
-    public void noWinnerSinceNoMatcherAnnotation() {
-        // Given
-        SimpleSelector simpleSelector = new SimpleSelector();
-        Set<MyHandler> handlers = new HashSet<>();
-        handlers.add(new NoAnno1MyHandler());
-        handlers.add(new NoAnno2MyHandler());
-        simpleSelector.registerCandidates(MyHandler.class, handlers);
+	@Test
+	public void noWinnerSinceNoMatcherAnnotation() {
+		// Given
+		SimpleSelector simpleSelector = new SimpleSelector();
+		Set<MyHandler> handlers = new HashSet<>();
+		handlers.add(new NoAnno1MyHandler());
+		handlers.add(new NoAnno2MyHandler());
+		simpleSelector.registerCandidates(MyHandler.class, handlers);
 
-        // When
-        MyHandler winner = simpleSelector.select(new Object(), MyHandler.class);
+		// When
+		MyHandler winner = simpleSelector.select(new Object(), MyHandler.class);
 
-        // Then
-        assertThat(winner).isNull();
-    }
+		// Then
+		assertThat(winner).isNull();
+	}
 
-    interface MyHandler {
+	interface MyHandler {
 
-    }
+	}
 
-    class NoAnno1MyHandler implements MyHandler {
+	private class NoAnno1MyHandler implements MyHandler {
 
-    }
+	}
 
-    class NoAnno2MyHandler implements MyHandler {
+	private class NoAnno2MyHandler implements MyHandler {
 
-    }
+	}
 
 }

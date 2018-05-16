@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class MatcherConfiguration {
-    @Bean
-    public EqualsMatcher.Processor equalsMatcherProcessor() {
-        return new EqualsMatcher.Processor();
-    }
+	@Bean
+	public EqualsMatcher.Processor equalsMatcherProcessor() {
+		return new EqualsMatcher.Processor();
+	}
 }

@@ -7,53 +7,53 @@ import java.lang.annotation.Annotation;
  */
 public abstract class AbstractSelector implements Selector {
 
-    public <T> T select(Object request, Class<T> candidateType) {
-        Iterable<T> candidates = findCandidatesByType(candidateType);
+	public <T> T select(Object request, Class<T> candidateType) {
+		Iterable<T> candidates = findCandidatesByType(candidateType);
 
-        SelectStrategy<T> selectStrategy = getSelectStrategy();
+		SelectStrategy<T> selectStrategy = getSelectStrategy();
 
-        for (T candidate : candidates) {
-            Annotation[] annotations = candidate.getClass().getAnnotations();
+		for (T candidate : candidates) {
+			Annotation[] annotations = candidate.getClass().getAnnotations();
 
-            for (Annotation annotation : annotations) {
-                MatchResult matchResult = doMatch(request, annotation);
+			for (Annotation annotation : annotations) {
+				MatchResult matchResult = doMatch(request, annotation);
 
-                if (matchResult == null) {
-                    continue;
-                }
+				if (matchResult == null) {
+					continue;
+				}
 
-                selectStrategy.addMatchResult(matchResult);
-            }
+				selectStrategy.addMatchResult(matchResult);
+			}
 
-            selectStrategy.addCandidate(candidate);
-        }
+			selectStrategy.addCandidate(candidate);
+		}
 
-        return selectStrategy.getWinner();
-    }
+		return selectStrategy.getWinner();
+	}
 
-    private MatchResult doMatch(Object request, Annotation annotation) {
-        MatcherType matcherType =
-                annotation.annotationType().getAnnotation(MatcherType.class);
-        if (matcherType == null) {
-            return null;
-        }
+	private MatchResult doMatch(Object request, Annotation annotation) {
+		MatcherType matcherType =
+				annotation.annotationType().getAnnotation(MatcherType.class);
+		if (matcherType == null) {
+			return null;
+		}
 
-        MatcherProcessor<Annotation> matcherProcessor =
-                getMatcherProcessor(matcherType.processor());
+		MatcherProcessor<Annotation> matcherProcessor =
+				getMatcherProcessor(matcherType.processor());
 
-        if (matcherProcessor == null) {
-            throw new NullPointerException("Cannot find the matcher processor");
-        }
+		if (matcherProcessor == null) {
+			throw new NullPointerException("Cannot find the matcher processor");
+		}
 
-        return matcherProcessor.process(request, annotation);
-    }
+		return matcherProcessor.process(request, annotation);
+	}
 
-    protected abstract MatcherProcessor<Annotation> getMatcherProcessor(
-            Class<? extends MatcherProcessor> processorClass);
+	protected abstract MatcherProcessor<Annotation> getMatcherProcessor(
+			Class<? extends MatcherProcessor> processorClass);
 
-    protected abstract <T> Iterable<T> findCandidatesByType(Class<T> beanClass);
+	protected abstract <T> Iterable<T> findCandidatesByType(Class<T> beanClass);
 
-    protected <T> SelectStrategy<T> getSelectStrategy() {
-        return new ScoreSelectStrategy<T>();
-    }
+	protected <T> SelectStrategy<T> getSelectStrategy() {
+		return new ScoreSelectStrategy<>();
+	}
 }
