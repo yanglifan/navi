@@ -15,6 +15,7 @@ public abstract class OnePropertyMatcherProcessor<A extends Annotation>
 		implements MatcherProcessor<A> {
 
 	private static final String PROPERTY_SEPARATOR = ".";
+	private static final String PROPERTY_SEPARATOR_REGEX = "\\.";
 
 	@Override
 	public MatchResult process(Object request, A matcherAnnotation) {
@@ -41,7 +42,7 @@ public abstract class OnePropertyMatcherProcessor<A extends Annotation>
 
 	private List<String> toPropertyList(String propPath) {
 		if (propPath.contains(PROPERTY_SEPARATOR)) {
-			String[] propArray = propPath.split("\\.");
+			String[] propArray = propPath.split(PROPERTY_SEPARATOR_REGEX);
 			return Arrays.asList(propArray);
 		} else {
 			return Collections.singletonList(propPath);
