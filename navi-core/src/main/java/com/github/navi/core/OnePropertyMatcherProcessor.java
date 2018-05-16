@@ -1,6 +1,6 @@
 package com.github.navi.core;
 
-import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -19,23 +19,29 @@ public abstract class OnePropertyMatcherProcessor<A extends Annotation>
 	@Override
 	public MatchResult process(Object request, A matcherAnnotation) {
 		String propPath = getPropertyPath(matcherAnnotation);
-		List<String> properties = getProperties(matcherAnnotation, propPath);
+		List<String> properties = toPropertyList(propPath);
 
-		Object finalReq = request;
+		Object result = request;
 		try {
-			for (String prop : properties) {
-				finalReq = BeanUtils.getProperty(finalReq, prop);
-			}
+			result = getFinalResult(properties, result);
 		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 			return MatchResult.REJECT;
 		}
 
-		return doProcess(finalReq, matcherAnnotation);
+		return doProcess(result, matcherAnnotation);
 	}
 
-	private List<String> getProperties(A matcherAnnotation, String propPath) {
+	private Object getFinalResult(List<String> properties, Object result) throws IllegalAccessException,
+			InvocationTargetException, NoSuchMethodException {
+		for (String prop : properties) {
+			result = PropertyUtils.getProperty(result, prop);
+		}
+		return result;
+	}
+
+	private List<String> toPropertyList(String propPath) {
 		if (propPath.contains(PROPERTY_SEPARATOR)) {
-			String[] propArray = getPropertyPath(matcherAnnotation).split(".");
+			String[] propArray = propPath.split("\\.");
 			return Arrays.asList(propArray);
 		} else {
 			return Collections.singletonList(propPath);

@@ -1,12 +1,10 @@
 package com.github.navi.core.matcher;
 
 import com.github.navi.core.MatchResult;
-import com.github.navi.core.MatcherProcessor;
 import com.github.navi.core.MatcherType;
-import org.apache.commons.beanutils.BeanUtils;
+import com.github.navi.core.OnePropertyMatcherProcessor;
 
 import java.lang.annotation.*;
-import java.lang.reflect.InvocationTargetException;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -18,20 +16,16 @@ public @interface EqualsMatcher {
 
 	String expectValue();
 
-	class Processor implements MatcherProcessor<EqualsMatcher> {
+	class Processor extends OnePropertyMatcherProcessor<EqualsMatcher> {
+
 		@Override
-		public MatchResult process(Object request, EqualsMatcher matcherAnnotation) {
-			String paramPath = matcherAnnotation.propertyPath();
-			Object property;
-			try {
-				property = BeanUtils.getProperty(request, paramPath);
-			} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-				return MatchResult.REJECT;
-			}
+		protected String getPropertyPath(EqualsMatcher matcherAnnotation) {
+			return matcherAnnotation.propertyPath();
+		}
 
-
-			boolean isEquals = matcherAnnotation.expectValue().equals(property.toString());
-
+		@Override
+		protected MatchResult doProcess(Object request, EqualsMatcher matcherAnnotation) {
+			boolean isEquals = matcherAnnotation.expectValue().equals(request.toString());
 			return isEquals ? MatchResult.ACCEPT : MatchResult.REJECT;
 		}
 	}

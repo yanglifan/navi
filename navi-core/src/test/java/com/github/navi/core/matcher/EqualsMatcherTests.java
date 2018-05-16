@@ -32,9 +32,39 @@ public class EqualsMatcherTests {
 
 
 	@Test
-	public void simpleMatch() {
+	public void simple() {
 		TestRequest testRequest = new TestRequest("stark");
 		MatchResult matchResult = equalsMatcherProcessor.process(testRequest, usernameEqualsStark);
+		assertThat(matchResult).isEqualTo(MatchResult.ACCEPT);
+	}
+
+	@Test
+	public void nested_prop() {
+		// Given
+		Map<String, Object> request = new HashMap<>();
+		request.put("propLevel1", new TestRequest("stark"));
+
+		EqualsMatcher equalsMatcher = new EqualsMatcher() {
+			@Override
+			public String propertyPath() {
+				return "propLevel1.username";
+			}
+
+			@Override
+			public String expectValue() {
+				return "stark";
+			}
+
+			@Override
+			public Class<? extends Annotation> annotationType() {
+				return null;
+			}
+		};
+
+		// When
+		MatchResult matchResult = equalsMatcherProcessor.process(request, equalsMatcher);
+
+		// Then
 		assertThat(matchResult).isEqualTo(MatchResult.ACCEPT);
 	}
 
