@@ -1,5 +1,7 @@
-package com.github.navi.core;
+package com.github.navi.core.matcher;
 
+import com.github.navi.core.MatchResult;
+import com.github.navi.core.MatcherProcessor;
 import org.apache.commons.beanutils.PropertyUtils;
 
 import java.lang.annotation.Annotation;
