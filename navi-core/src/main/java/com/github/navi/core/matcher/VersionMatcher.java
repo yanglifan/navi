@@ -110,6 +110,7 @@ public @interface VersionMatcher {
 		private int patch;
 
 		Version(String rawVersion) {
+			// TODO Check version format
 			if (ALL_VERSIONS.equals(rawVersion)) {
 				this.isAny = true;
 			} else {
@@ -117,7 +118,6 @@ public @interface VersionMatcher {
 				major = Integer.valueOf(versionArray[0]);
 				minor = Integer.valueOf(versionArray[1]);
 				patch = Integer.valueOf(versionArray[2]);
-
 			}
 		}
 
