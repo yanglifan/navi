@@ -41,7 +41,7 @@ public abstract class AbstractSelector implements Selector {
 		selectStrategy.addCandidate(candidate);
 	}
 
-	private <T> List<Annotation> getMatcherAnnotations(T candidate) {
+	private List<Annotation> getMatcherAnnotations(Object candidate) {
 		Annotation[] annotations = candidate.getClass().getAnnotations();
 		List<Annotation> allMatcherAnnotations = new ArrayList<>();
 
@@ -54,9 +54,9 @@ public abstract class AbstractSelector implements Selector {
 
 			CompositeMatcher compositeMatcher = annotation.annotationType().getAnnotation(CompositeMatcher.class);
 			if (compositeMatcher != null) {
-				List<Annotation> matchersFromCompositeMatcher = getMatcherAnnotations(annotation);
-				if (!matchersFromCompositeMatcher.isEmpty()) {
-					allMatcherAnnotations.addAll(matchersFromCompositeMatcher);
+				List<Annotation> matcherAnnotations = getMatcherAnnotations(annotation);
+				if (!matcherAnnotations.isEmpty()) {
+					allMatcherAnnotations.addAll(matcherAnnotations);
 				}
 			}
 		}

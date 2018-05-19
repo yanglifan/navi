@@ -38,14 +38,21 @@ public class CompositeMatcherTests {
 		SimpleSelector selector = new SimpleSelector();
 		selector.registerCandidates(Handler.class, handlers);
 
-		Map<String, String> request = new HashMap<>();
-		request.put("platform", "android");
-		request.put("version", "1.0.0");
+		Map<String, String> request1 = new HashMap<>();
+		request1.put("platform", "android");
+		request1.put("version", "1.0.0");
+
+
+		Map<String, String> request2 = new HashMap<>();
+		request2.put("platform", "android");
+		request2.put("version", "2.0.0");
 
 		// When
-		Handler androidV1Handler = selector.select(request, Handler.class);
+		Handler androidV1Handler = selector.select(request1, Handler.class);
+		Handler androidV2Handler = selector.select(request2, Handler.class);
 
 		// Then
 		assertThat(androidV1Handler).isInstanceOf(AndroidV1Handler.class);
+		assertThat(androidV2Handler).isNull();
 	}
 }
