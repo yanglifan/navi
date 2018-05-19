@@ -40,14 +40,27 @@ public abstract class AbstractSelector implements Selector {
 	}
 
 	private MatchResult doMatch(Object request, Annotation annotation) {
-		MatcherType matcherType =
-				annotation.annotationType().getAnnotation(MatcherType.class);
-		if (matcherType == null) {
+		MatcherType matcherType = annotation.annotationType().getAnnotation(MatcherType.class);
+		CompositeMatcher compositeMatcher = annotation.annotationType().getAnnotation(CompositeMatcher.class);
+
+		if (matcherType == null || compositeMatcher == null) {
 			return null;
 		}
 
-		MatcherProcessor<Annotation> matcherProcessor =
-				getMatcherProcessor(matcherType.processor());
+		if (matcherType != null) {
+			return doMatchWithMatcher(request, annotation, matcherType);
+		} else {
+			return doMatchWithCompositeMatcher(request, annotation, compositeMatcher);
+		}
+	}
+
+	private MatchResult doMatchWithCompositeMatcher(Object request, Annotation annotation,
+													CompositeMatcher compositeMatcher) {
+		return null;
+	}
+
+	private MatchResult doMatchWithMatcher(Object request, Annotation annotation, MatcherType matcherType) {
+		MatcherProcessor<Annotation> matcherProcessor = getMatcherProcessor(matcherType.processor());
 
 		if (matcherProcessor == null) {
 			throw new NullPointerException("Cannot find the matcher processor");
