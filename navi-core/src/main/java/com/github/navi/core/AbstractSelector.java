@@ -52,8 +52,9 @@ public abstract class AbstractSelector implements Selector {
 				continue;
 			}
 
-			CompositeMatcher compositeMatcher = annotation.annotationType().getAnnotation(CompositeMatcher.class);
-			if (compositeMatcher != null) {
+			CompositeMatcherType compositeMatcherType =
+					annotation.annotationType().getAnnotation(CompositeMatcherType.class);
+			if (compositeMatcherType != null) {
 				List<Annotation> matcherAnnotations = getMatcherAnnotations(annotation);
 				if (!matcherAnnotations.isEmpty()) {
 					allMatcherAnnotations.addAll(matcherAnnotations);

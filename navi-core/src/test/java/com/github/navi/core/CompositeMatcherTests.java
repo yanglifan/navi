@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @VersionMatcher(versionRange = "[1.0.0,2.0.0)")
 @EqualsMatcher(propertyPath = "platform", expectValue = "android")
-@CompositeMatcher
+@CompositeMatcherType
 @interface AndroidV1Matcher {
 
 }
