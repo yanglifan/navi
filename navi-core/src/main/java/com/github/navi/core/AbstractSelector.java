@@ -1,6 +1,8 @@
 package com.github.navi.core;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Yang Lifan
@@ -20,7 +22,7 @@ public abstract class AbstractSelector implements Selector {
 	}
 
 	private <T> void doMatch(Object request, T candidate, SelectStrategy<T> selectStrategy) {
-		Annotation[] annotations = candidate.getClass().getAnnotations();
+		List<Annotation> annotations = getMatcherAnnotations(candidate);
 
 		for (Annotation annotation : annotations) {
 			MatchResult matchResult = doMatch(request, annotation);
@@ -39,34 +41,39 @@ public abstract class AbstractSelector implements Selector {
 		selectStrategy.addCandidate(candidate);
 	}
 
-	private MatchResult doMatch(Object request, Annotation annotation) {
-		MatcherType matcherType = annotation.annotationType().getAnnotation(MatcherType.class);
-		CompositeMatcher compositeMatcher = annotation.annotationType().getAnnotation(CompositeMatcher.class);
+	private <T> List<Annotation> getMatcherAnnotations(T candidate) {
+		Annotation[] annotations = candidate.getClass().getAnnotations();
+		List<Annotation> allMatcherAnnotations = new ArrayList<>();
 
-		if (matcherType == null || compositeMatcher == null) {
-			return null;
+		for (Annotation annotation : annotations) {
+			MatcherType matcher = annotation.annotationType().getAnnotation(MatcherType.class);
+			if (matcher != null) {
+				allMatcherAnnotations.add(annotation);
+				continue;
+			}
+
+			CompositeMatcher compositeMatcher = annotation.annotationType().getAnnotation(CompositeMatcher.class);
+			if (compositeMatcher != null) {
+				List<Annotation> matchersFromCompositeMatcher = getMatcherAnnotations(annotation);
+				if (!matchersFromCompositeMatcher.isEmpty()) {
+					allMatcherAnnotations.addAll(matchersFromCompositeMatcher);
+				}
+			}
 		}
 
-		if (matcherType != null) {
-			return doMatchWithMatcher(request, annotation, matcherType);
-		} else {
-			return doMatchWithCompositeMatcher(request, annotation, compositeMatcher);
-		}
+		return allMatcherAnnotations;
 	}
 
-	private MatchResult doMatchWithCompositeMatcher(Object request, Annotation annotation,
-													CompositeMatcher compositeMatcher) {
-		return null;
-	}
+	private MatchResult doMatch(Object request, Annotation matcherAnnotation) {
+		MatcherType matcherType = matcherAnnotation.annotationType().getAnnotation(MatcherType.class);
 
-	private MatchResult doMatchWithMatcher(Object request, Annotation annotation, MatcherType matcherType) {
 		MatcherProcessor<Annotation> matcherProcessor = getMatcherProcessor(matcherType.processor());
 
 		if (matcherProcessor == null) {
 			throw new NullPointerException("Cannot find the matcher processor");
 		}
 
-		return matcherProcessor.process(request, annotation);
+		return matcherProcessor.process(request, matcherAnnotation);
 	}
 
 	protected abstract MatcherProcessor<Annotation> getMatcherProcessor(
