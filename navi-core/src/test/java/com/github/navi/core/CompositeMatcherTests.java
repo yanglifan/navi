@@ -18,9 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 }
 
-interface Handler {
-}
-
 @AndroidV1Matcher
 class AndroidV1Handler implements Handler {
 
