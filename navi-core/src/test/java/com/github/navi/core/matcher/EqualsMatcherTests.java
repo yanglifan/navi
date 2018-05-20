@@ -13,15 +13,15 @@ public class EqualsMatcherTests {
 
 	private EqualsMatcher.Processor equalsMatcherProcessor = new EqualsMatcher.Processor();
 
-	private EqualsMatcher usernameEqualsStark = new EqualsMatcher() {
+	private EqualsMatcher starkOrThor = new EqualsMatcher() {
 		@Override
 		public String propertyPath() {
 			return "username";
 		}
 
 		@Override
-		public String expectValue() {
-			return "stark";
+		public String[] expectValue() {
+			return new String[]{"stark", "thor"};
 		}
 
 		@Override
@@ -30,12 +30,27 @@ public class EqualsMatcherTests {
 		}
 	};
 
-
 	@Test
 	public void simple() {
 		TestRequest testRequest = new TestRequest("stark");
-		MatchResult matchResult = equalsMatcherProcessor.process(testRequest, usernameEqualsStark);
+		MatchResult matchResult = equalsMatcherProcessor.process(testRequest, starkOrThor);
 		assertThat(matchResult).isEqualTo(MatchResult.ACCEPT);
+	}
+
+	@Test
+	public void match_multi_values() {
+		Map<String, String> request = new HashMap<>();
+		request.put("username", "stark");
+		MatchResult matchResult = equalsMatcherProcessor.process(request, starkOrThor);
+		assertThat(matchResult).isEqualTo(MatchResult.ACCEPT);
+
+		request.put("username", "thor");
+		matchResult = equalsMatcherProcessor.process(request, starkOrThor);
+		assertThat(matchResult).isEqualTo(MatchResult.ACCEPT);
+
+		request.put("username", "rogers");
+		matchResult = equalsMatcherProcessor.process(request, starkOrThor);
+		assertThat(matchResult).isEqualTo(MatchResult.REJECT);
 	}
 
 	@Test
@@ -51,8 +66,8 @@ public class EqualsMatcherTests {
 			}
 
 			@Override
-			public String expectValue() {
-				return "stark";
+			public String[] expectValue() {
+				return new String[]{"stark"};
 			}
 
 			@Override
@@ -72,7 +87,7 @@ public class EqualsMatcherTests {
 	public void doMatchWithMapRequest() {
 		Map<String, String> mapRequest = new HashMap<>();
 		mapRequest.put("username", "stark");
-		MatchResult matchResult = equalsMatcherProcessor.process(mapRequest, usernameEqualsStark);
+		MatchResult matchResult = equalsMatcherProcessor.process(mapRequest, starkOrThor);
 		assertThat(matchResult).isEqualTo(MatchResult.ACCEPT);
 	}
 

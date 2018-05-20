@@ -9,6 +9,8 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Arrays;
+import java.util.List;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -18,7 +20,7 @@ import java.lang.annotation.Target;
 public @interface EqualsMatcher {
 	String propertyPath();
 
-	String expectValue();
+	String[] expectValue();
 
 	class Processor extends OnePropertyMatcherProcessor<EqualsMatcher> {
 
@@ -29,8 +31,9 @@ public @interface EqualsMatcher {
 
 		@Override
 		protected MatchResult doProcess(Object request, EqualsMatcher matcherAnnotation) {
-			boolean isEquals = matcherAnnotation.expectValue().equals(request.toString());
-			return isEquals ? MatchResult.ACCEPT : MatchResult.REJECT;
+			List<String> expectValueList = Arrays.asList(matcherAnnotation.expectValue());
+			boolean isContains = expectValueList.contains(request.toString());
+			return isContains ? MatchResult.ACCEPT : MatchResult.REJECT;
 		}
 	}
 }
