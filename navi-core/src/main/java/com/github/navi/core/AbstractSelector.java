@@ -65,29 +65,41 @@ public abstract class AbstractSelector implements Selector {
 		List<Annotation> allMatcherAnnotations = new ArrayList<>();
 
 		for (Annotation annotation : annotations) {
-			MatcherType matcher = annotation.annotationType().getAnnotation(MatcherType.class);
-			if (matcher != null) {
-				allMatcherAnnotations.add(annotation);
-				continue;
-			}
-
-			CompositeMatcherType compositeMatcherType =
-					annotation.annotationType().getAnnotation(CompositeMatcherType.class);
-			if (compositeMatcherType != null) {
-				List<Annotation> matcherAnnotations = getMatcherAnnotations(annotation);
-				if (!matcherAnnotations.isEmpty()) {
-					allMatcherAnnotations.addAll(matcherAnnotations);
-				}
-			}
+			processMatcherType(annotation, allMatcherAnnotations);
+			processCompositeMatcherType(annotation, allMatcherAnnotations);
 		}
 
 		return allMatcherAnnotations;
 	}
 
+	private void processCompositeMatcherType(Annotation annotation, List<Annotation> allMatcherAnnotations) {
+		CompositeMatcherType compositeMatcherType =
+				annotation.annotationType().getAnnotation(CompositeMatcherType.class);
+		if (compositeMatcherType == null) {
+			return;
+		}
+
+		List<Annotation> matcherAnnotations = getMatcherAnnotations(annotation);
+
+		if (!matcherAnnotations.isEmpty()) {
+			allMatcherAnnotations.addAll(matcherAnnotations);
+		}
+	}
+
+	private void processMatcherType(Annotation annotation, List<Annotation> allMatcherAnnotations) {
+		MatcherType matcher = annotation.annotationType().getAnnotation(MatcherType.class);
+		if (matcher == null) {
+			return;
+		}
+
+		allMatcherAnnotations.add(annotation);
+	}
+
+	@SuppressWarnings("unchecked")
 	private MatchResult doMatch(Object request, Annotation matcherAnnotation) {
 		MatcherType matcherType = matcherAnnotation.annotationType().getAnnotation(MatcherType.class);
 
-		MatcherProcessor<Annotation> matcherProcessor = getMatcherProcessor(matcherType.processor());
+		MatcherProcessor matcherProcessor = getMatcherProcessor(matcherType.processor());
 
 		if (matcherProcessor == null) {
 			throw new NullPointerException("Cannot find the matcher processor");

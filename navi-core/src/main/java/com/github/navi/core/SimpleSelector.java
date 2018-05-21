@@ -24,8 +24,7 @@ public class SimpleSelector extends AbstractSelector {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected MatcherProcessor<Annotation> getMatcherProcessor(
-			Class<? extends MatcherProcessor> processorClass) {
+	protected MatcherProcessor getMatcherProcessor(Class<? extends MatcherProcessor> processorClass) {
 		try {
 			return (MatcherProcessor<Annotation>)
 					Class.forName(processorClass.getName()).newInstance();
