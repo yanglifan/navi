@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class IntersectionMatcherTests {
+public class IntersectMatcherTests {
 	@Test
 	public void intersect_string() {
 		Map<String, String> request = new HashMap<>();
@@ -26,7 +26,7 @@ public class IntersectionMatcherTests {
 }
 
 
-@IntersectionMatcher(propertyPath = "name", expectValue = {"stark", "rogers"})
+@IntersectMatcher(propertyPath = "name", expectValue = {"stark", "rogers"})
 class IntersectHandler implements Handler {
 
 }

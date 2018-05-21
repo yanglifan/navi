@@ -9,11 +9,11 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EqualsMatcherTests {
+public class EqualMatcherTests {
 
-	private EqualsMatcher.Processor equalsMatcherProcessor = new EqualsMatcher.Processor();
+	private EqualMatcher.Processor equalsMatcherProcessor = new EqualMatcher.Processor();
 
-	private EqualsMatcher starkOrThor = new EqualsMatcher() {
+	private EqualMatcher starkOrThor = new EqualMatcher() {
 		@Override
 		public String propertyPath() {
 			return "username";
@@ -59,7 +59,7 @@ public class EqualsMatcherTests {
 		Map<String, Object> request = new HashMap<>();
 		request.put("propLevel1", new TestRequest("stark"));
 
-		EqualsMatcher equalsMatcher = new EqualsMatcher() {
+		EqualMatcher equalMatcher = new EqualMatcher() {
 			@Override
 			public String propertyPath() {
 				return "propLevel1.username";
@@ -77,7 +77,7 @@ public class EqualsMatcherTests {
 		};
 
 		// When
-		MatchResult matchResult = equalsMatcherProcessor.process(request, equalsMatcher);
+		MatchResult matchResult = equalsMatcherProcessor.process(request, equalMatcher);
 
 		// Then
 		assertThat(matchResult).isEqualTo(MatchResult.ACCEPT);

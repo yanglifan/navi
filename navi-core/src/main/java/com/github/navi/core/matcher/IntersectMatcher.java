@@ -19,23 +19,23 @@ import java.util.List;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@MatcherType(processor = IntersectionMatcher.Processor.class)
-public @interface IntersectionMatcher {
+@MatcherType(processor = IntersectMatcher.Processor.class)
+public @interface IntersectMatcher {
 	String propertyPath();
 
 	String[] expectValue();
 
 	String separator() default ",";
 
-	class Processor extends OnePropertyMatcherProcessor<IntersectionMatcher> {
+	class Processor extends OnePropertyMatcherProcessor<IntersectMatcher> {
 
 		@Override
-		protected String getPropertyPath(IntersectionMatcher matcherAnnotation) {
+		protected String getPropertyPath(IntersectMatcher matcherAnnotation) {
 			return matcherAnnotation.propertyPath();
 		}
 
 		@Override
-		protected MatchResult doProcess(Object property, IntersectionMatcher matcherAnnotation) {
+		protected MatchResult doProcess(Object property, IntersectMatcher matcherAnnotation) {
 			List<String> expectValueList = Arrays.asList(matcherAnnotation.expectValue());
 
 			boolean isIntersected;

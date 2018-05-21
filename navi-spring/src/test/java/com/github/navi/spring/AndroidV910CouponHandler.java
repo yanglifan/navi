@@ -1,6 +1,6 @@
 package com.github.navi.spring;
 
-import com.github.navi.core.matcher.EqualsMatcher;
+import com.github.navi.core.matcher.EqualMatcher;
 import com.github.navi.core.matcher.VersionMatcher;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  */
 
 
-@EqualsMatcher(propertyPath = "platform", expectValue = "android")
+@EqualMatcher(propertyPath = "platform", expectValue = "android")
 @VersionMatcher(propertyPath = "clientVersion", versionRange = "[9.1.0,*]")
 @Component
 public class AndroidV910CouponHandler implements CouponHandler {

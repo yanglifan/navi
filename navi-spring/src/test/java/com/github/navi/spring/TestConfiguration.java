@@ -1,7 +1,7 @@
 package com.github.navi.spring;
 
 import com.github.navi.core.Selector;
-import com.github.navi.core.matcher.EqualsMatcher;
+import com.github.navi.core.matcher.EqualMatcher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
@@ -17,12 +17,12 @@ public class TestConfiguration {
 	}
 
 	@SuppressWarnings("all")
-	@EqualsMatcher(propertyPath = "username", expectValue = "foo")
+	@EqualMatcher(propertyPath = "username", expectValue = "foo")
 	@Component
 	static class FooHandler implements Handler {
 	}
 
-	@EqualsMatcher(propertyPath = "username", expectValue = "bar")
+	@EqualMatcher(propertyPath = "username", expectValue = "bar")
 	@Component
 	static class BarHandler implements Handler {
 	}

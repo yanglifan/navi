@@ -1,6 +1,6 @@
 package com.github.navi.spring;
 
-import com.github.navi.core.matcher.EqualsMatcher;
+import com.github.navi.core.matcher.EqualMatcher;
 import com.github.navi.core.matcher.VersionMatcher;
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ public class MatcherProcessorClassLoaderTest {
 	public void find_all_matcher_processor_classes() {
 		List<Class> classes = MatcherProcessorClassFinder.findAll();
 		System.out.println(classes.get(0).getPackage().getName());
-		assertThat(classes).contains(EqualsMatcher.Processor.class);
+		assertThat(classes).contains(EqualMatcher.Processor.class);
 		assertThat(classes).contains(VersionMatcher.Processor.class);
 	}
 }

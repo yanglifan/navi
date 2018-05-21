@@ -1,6 +1,6 @@
 package com.github.navi.core;
 
-import com.github.navi.core.matcher.EqualsMatcher;
+import com.github.navi.core.matcher.EqualMatcher;
 import com.github.navi.core.matcher.VersionMatcher;
 import org.junit.Test;
 
@@ -66,7 +66,7 @@ public class PerfTests {
 
 	}
 
-	@EqualsMatcher(propertyPath = "text", expectValue = "hello")
+	@EqualMatcher(propertyPath = "text", expectValue = "hello")
 	private class HelloTestHandler implements TestHandler {
 
 	}

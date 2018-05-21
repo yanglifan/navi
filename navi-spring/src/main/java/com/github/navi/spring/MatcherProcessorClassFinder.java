@@ -1,7 +1,7 @@
 package com.github.navi.spring;
 
 import com.github.navi.core.MatcherType;
-import com.github.navi.core.matcher.EqualsMatcher;
+import com.github.navi.core.matcher.EqualMatcher;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
 
@@ -38,7 +38,7 @@ public class MatcherProcessorClassFinder {
 	}
 
 	private static String getMatcherPackageName() {
-		return EqualsMatcher.class.getPackage().getName();
+		return EqualMatcher.class.getPackage().getName();
 	}
 
 	private static ClassPath buildClassPath() {

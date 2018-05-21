@@ -16,21 +16,21 @@ import java.util.List;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@MatcherType(processor = EqualsMatcher.Processor.class)
-public @interface EqualsMatcher {
+@MatcherType(processor = EqualMatcher.Processor.class)
+public @interface EqualMatcher {
 	String propertyPath();
 
 	String[] expectValue();
 
-	class Processor extends OnePropertyMatcherProcessor<EqualsMatcher> {
+	class Processor extends OnePropertyMatcherProcessor<EqualMatcher> {
 
 		@Override
-		protected String getPropertyPath(EqualsMatcher matcherAnnotation) {
+		protected String getPropertyPath(EqualMatcher matcherAnnotation) {
 			return matcherAnnotation.propertyPath();
 		}
 
 		@Override
-		protected MatchResult doProcess(Object request, EqualsMatcher matcherAnnotation) {
+		protected MatchResult doProcess(Object request, EqualMatcher matcherAnnotation) {
 			List<String> expectValueList = Arrays.asList(matcherAnnotation.expectValue());
 			boolean isContains = expectValueList.contains(request.toString());
 			return isContains ? MatchResult.ACCEPT : MatchResult.REJECT;

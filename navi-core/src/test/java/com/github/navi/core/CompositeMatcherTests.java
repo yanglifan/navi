@@ -1,6 +1,6 @@
 package com.github.navi.core;
 
-import com.github.navi.core.matcher.EqualsMatcher;
+import com.github.navi.core.matcher.EqualMatcher;
 import com.github.navi.core.matcher.VersionMatcher;
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @VersionMatcher(versionRange = "[1.0.0,2.0.0)")
-@EqualsMatcher(propertyPath = "platform", expectValue = "android")
+@EqualMatcher(propertyPath = "platform", expectValue = "android")
 @CompositeMatcherType
 @interface AndroidV1Matcher {
 

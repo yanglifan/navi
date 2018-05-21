@@ -1,6 +1,6 @@
 package com.github.navi.core;
 
-import com.github.navi.core.matcher.EqualsMatcher;
+import com.github.navi.core.matcher.EqualMatcher;
 import com.github.navi.core.matcher.VersionMatcher;
 import org.junit.Test;
 
@@ -59,7 +59,7 @@ public class SimpleSelectorTests {
 
 	}
 
-	@EqualsMatcher(propertyPath = "username", expectValue = "stark")
+	@EqualMatcher(propertyPath = "username", expectValue = "stark")
 	@VersionMatcher(versionRange = "[1.0.0,2.0.0)")
 	private class StarkHandler implements Handler {
 
