@@ -11,14 +11,14 @@ import java.util.List;
  * @author Yang Lifan
  */
 public abstract class AbstractSelector implements Selector {
-	private Class<? extends SelectStrategy> defaultSelectStrategy;
+	protected Class<? extends SelectStrategy> defaultSelectStrategyClass;
 
 	public AbstractSelector() {
 		this(ScoreSelectStrategy.class);
 	}
 
-	public AbstractSelector(Class<? extends SelectStrategy> defaultSelectStrategy) {
-		this.defaultSelectStrategy = defaultSelectStrategy;
+	public AbstractSelector(Class<? extends SelectStrategy> defaultSelectStrategyClass) {
+		this.defaultSelectStrategyClass = defaultSelectStrategyClass;
 	}
 
 	public <T> T select(Object request, Class<T> candidateType) {
@@ -96,17 +96,16 @@ public abstract class AbstractSelector implements Selector {
 		return matcherProcessor.process(request, matcherAnnotation);
 	}
 
+	protected abstract MatcherProcessor getMatcherProcessor(Class<? extends MatcherProcessor> processorClass);
+
+	protected abstract <T> Iterable<T> findCandidatesByType(Class<T> beanClass);
+
 	@SuppressWarnings("unchecked")
-	private <T> SelectStrategy<T> createSelectStrategy() {
+	protected <T> SelectStrategy<T> createSelectStrategy() {
 		try {
-			return defaultSelectStrategy.newInstance();
+			return defaultSelectStrategyClass.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw new SelectStrategyCreationException(e);
 		}
 	}
-
-	protected abstract MatcherProcessor<Annotation> getMatcherProcessor(
-			Class<? extends MatcherProcessor> processorClass);
-
-	protected abstract <T> Iterable<T> findCandidatesByType(Class<T> beanClass);
 }
