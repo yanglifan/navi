@@ -2,6 +2,7 @@ package com.github.navi.core;
 
 import com.github.navi.core.matcher.EqualMatcher;
 import com.github.navi.core.matcher.VersionMatcher;
+import com.github.navi.core.strategy.FirstMatchSelectStrategy;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -45,6 +46,25 @@ public class SimpleSelectorTests {
 
 		// Then
 		assertThat(winner).isNull();
+	}
+
+	@Test
+	public void test_first_match_policy() {
+		// Given
+		SimpleSelector simpleSelector = new SimpleSelector();
+		Set<Handler> handlers = new HashSet<>();
+		handlers.add(new StarkHandler());
+		simpleSelector.registerCandidates(Handler.class, handlers);
+
+		Map<String, String> req = new HashMap<>();
+		req.put("username", "stark");
+		req.put("version", "1.0.0");
+
+		// When
+		Handler winner = simpleSelector.select(req, Handler.class, new FirstMatchSelectStrategy<>());
+
+		// Then
+		assertThat(winner).isInstanceOf(StarkHandler.class);
 	}
 
 	interface Handler {

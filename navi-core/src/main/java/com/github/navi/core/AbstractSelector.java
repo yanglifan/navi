@@ -1,6 +1,7 @@
 package com.github.navi.core;
 
 import com.github.navi.core.exception.SelectStrategyCreationException;
+import com.github.navi.core.strategy.ScoreSelectStrategy;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
