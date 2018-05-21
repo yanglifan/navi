@@ -38,11 +38,31 @@ public @interface IntersectionMatcher {
 		protected MatchResult doProcess(Object property, IntersectionMatcher matcherAnnotation) {
 			List<String> expectValueList = Arrays.asList(matcherAnnotation.expectValue());
 
-			boolean isIntersectedOnCollection = isIntersectOnCollection(property, expectValueList);
-			boolean isIntersectionOnString = isIntersectOnString(property, expectValueList,
-					matcherAnnotation.separator());
-			boolean isIntersected = isIntersectedOnCollection || isIntersectionOnString;
+			boolean isIntersected;
+			if (property instanceof String) {
+				isIntersected = isIntersectOnString(property, expectValueList, matcherAnnotation.separator());
+			} else if (isStringCollection(property)) {
+				isIntersected = isIntersectOnCollection(property, expectValueList);
+			} else {
+				isIntersected = false;
+			}
+
 			return isIntersected ? MatchResult.ACCEPT : MatchResult.REJECT;
+		}
+
+		private boolean isStringCollection(Object property) {
+			if (!(property instanceof Collection)) {
+				return false;
+			}
+
+			Collection collection = (Collection) property;
+			for (Object o : collection) {
+				if (!String.class.isInstance(o)) {
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 		private boolean isIntersectOnString(Object property, List<String> expectValueList, String separator) {
@@ -55,25 +75,20 @@ public @interface IntersectionMatcher {
 			return isIntersectOnCollection(propertyValues, expectValueList);
 		}
 
-		// TODO Check generic type
 		@SuppressWarnings("unchecked")
 		private boolean isIntersectOnCollection(Object property, List<String> expectValueList) {
-			try {
-				if (property instanceof Collection) {
-					Collection<String> collection = new ArrayList<>();
-					for (String v : (Collection<String>) property) {
-						collection.add(v.trim());
-					}
+			Collection<String> stringCollection = (Collection<String>) property;
+			stringCollection = trimStringCollection(stringCollection);
+			Collection intersectResult = CollectionUtils.intersection(expectValueList, stringCollection);
+			return !intersectResult.isEmpty();
+		}
 
-					Collection intersectResult = CollectionUtils.intersection(expectValueList, collection);
-					return !intersectResult.isEmpty();
-				} else {
-					return false;
-				}
-			} catch (Exception e) {
-				// TODO Log
-				return false;
+		private Collection<String> trimStringCollection(Collection<String> property) {
+			Collection<String> collection = new ArrayList<>();
+			for (String v : property) {
+				collection.add(v.trim());
 			}
+			return collection;
 		}
 	}
 }
