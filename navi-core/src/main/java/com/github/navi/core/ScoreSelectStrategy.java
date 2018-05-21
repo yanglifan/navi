@@ -26,9 +26,9 @@ public class ScoreSelectStrategy<T> implements SelectStrategy<T> {
 	}
 
 	@Override
-	public void addCandidate(T candidate) {
+	public T addCandidate(T candidate) {
 		if (currentResult == null) {
-			return;
+			return null;
 		}
 
 		currentResult.candidate = candidate;
@@ -40,10 +40,12 @@ public class ScoreSelectStrategy<T> implements SelectStrategy<T> {
 		if (isScoreHigherThanCurrentOne()) {
 			currentWinner = currentResult;
 		}
+
+		return null;
 	}
 
 	@Override
-	public T getWinner() {
+	public T getResult() {
 		if (currentWinner == null) {
 			return null;
 		}

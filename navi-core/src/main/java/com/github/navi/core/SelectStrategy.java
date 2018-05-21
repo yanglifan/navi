@@ -6,7 +6,7 @@ package com.github.navi.core;
 public interface SelectStrategy<T> {
 	void addMatchResult(MatchResult matchResult);
 
-	void addCandidate(T candidate);
+	T addCandidate(T candidate);
 
-	T getWinner();
+	T getResult();
 }

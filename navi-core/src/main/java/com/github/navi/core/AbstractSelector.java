@@ -1,5 +1,7 @@
 package com.github.navi.core;
 
+import com.github.navi.core.exception.SelectStrategyCreationException;
+
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,20 +10,36 @@ import java.util.List;
  * @author Yang Lifan
  */
 public abstract class AbstractSelector implements Selector {
+	private Class<? extends SelectStrategy> defaultSelectStrategy;
 
-	public <T> T select(Object request, Class<T> candidateType) {
-		Iterable<T> candidates = findCandidatesByType(candidateType);
-
-		SelectStrategy<T> selectStrategy = createSelectStrategy();
-
-		for (T candidate : candidates) {
-			doMatch(request, candidate, selectStrategy);
-		}
-
-		return selectStrategy.getWinner();
+	public AbstractSelector() {
+		this(ScoreSelectStrategy.class);
 	}
 
-	private <T> void doMatch(Object request, T candidate, SelectStrategy<T> selectStrategy) {
+	public AbstractSelector(Class<? extends SelectStrategy> defaultSelectStrategy) {
+		this.defaultSelectStrategy = defaultSelectStrategy;
+	}
+
+	public <T> T select(Object request, Class<T> candidateType) {
+		return this.select(request, candidateType, createSelectStrategy());
+	}
+
+	@Override
+	public <T> T select(Object request, Class<T> candidateType, SelectStrategy<T> selectStrategy) {
+		Iterable<T> candidates = findCandidatesByType(candidateType);
+
+		for (T candidate : candidates) {
+			T result = doMatch(request, candidate, selectStrategy);
+
+			if (result != null) {
+				return result;
+			}
+		}
+
+		return selectStrategy.getResult();
+	}
+
+	private <T> T doMatch(Object request, T candidate, SelectStrategy<T> selectStrategy) {
 		List<Annotation> annotations = getMatcherAnnotations(candidate);
 
 		for (Annotation annotation : annotations) {
@@ -32,13 +50,13 @@ public abstract class AbstractSelector implements Selector {
 			}
 
 			if (matchResult == MatchResult.REJECT) {
-				return;
+				return null;
 			}
 
 			selectStrategy.addMatchResult(matchResult);
 		}
 
-		selectStrategy.addCandidate(candidate);
+		return selectStrategy.addCandidate(candidate);
 	}
 
 	private List<Annotation> getMatcherAnnotations(Object candidate) {
@@ -77,12 +95,17 @@ public abstract class AbstractSelector implements Selector {
 		return matcherProcessor.process(request, matcherAnnotation);
 	}
 
+	@SuppressWarnings("unchecked")
+	private <T> SelectStrategy<T> createSelectStrategy() {
+		try {
+			return defaultSelectStrategy.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			throw new SelectStrategyCreationException(e);
+		}
+	}
+
 	protected abstract MatcherProcessor<Annotation> getMatcherProcessor(
 			Class<? extends MatcherProcessor> processorClass);
 
 	protected abstract <T> Iterable<T> findCandidatesByType(Class<T> beanClass);
-
-	protected <T> SelectStrategy<T> createSelectStrategy() {
-		return new ScoreSelectStrategy<>();
-	}
 }
