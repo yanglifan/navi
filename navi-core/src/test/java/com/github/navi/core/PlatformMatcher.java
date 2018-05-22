@@ -15,6 +15,6 @@ import java.lang.annotation.Target;
 @EqualMatcher(propertyPath = "platform")
 @CompositeMatcherType
 public @interface PlatformMatcher {
-	@AliasProp(annotation = EqualMatcher.class, value = "expectValue")
+	@AliasAttribute(annotationFor = EqualMatcher.class, value = "expectValue")
 	String platform();
 }

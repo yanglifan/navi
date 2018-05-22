@@ -67,7 +67,7 @@ public class SimpleSelectorTest {
 		assertThat(winner).isInstanceOf(StarkHandler.class);
 	}
 
-//	@Test
+	@Test
 	public void test_alias_prop() {
 		Map<String, String> request = new HashMap<>();
 		request.put("platform", "android");

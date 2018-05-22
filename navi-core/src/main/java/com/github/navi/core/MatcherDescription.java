@@ -1,6 +1,7 @@
 package com.github.navi.core;
 
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -11,12 +12,8 @@ public class MatcherDescription<A extends Annotation> {
 	private Map<String, String> aliasedAttributes;
 
 	public MatcherDescription(A matcher) {
-		this(matcher, null);
-	}
-
-	MatcherDescription(A matcher, Map<String, String> aliasedAttributes) {
 		this.matcher = matcher;
-		this.aliasedAttributes = aliasedAttributes;
+		aliasedAttributes = new HashMap<>();
 	}
 
 	public A getMatcher() {

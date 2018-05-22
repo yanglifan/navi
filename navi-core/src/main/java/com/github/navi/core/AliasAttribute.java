@@ -13,8 +13,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Documented
-public @interface AliasProp {
-	Class<? extends Annotation> annotation() default Annotation.class;
+public @interface AliasAttribute {
+	Class<? extends Annotation> annotationFor() default Annotation.class;
 
 	String value() default "";
 }
