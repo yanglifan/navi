@@ -67,6 +67,19 @@ public class SimpleSelectorTests {
 		assertThat(winner).isInstanceOf(StarkHandler.class);
 	}
 
+	@Test
+	public void test_alias_prop() {
+		Map<String, String> request = new HashMap<>();
+		request.put("platform", "android");
+
+		SimpleSelector selector = new SimpleSelector();
+		selector.registerCandidate(Handler.class, new WithAliasPropHandler());
+
+		Handler handler = selector.select(request, Handler.class);
+
+		assertThat(handler).isInstanceOf(WithAliasPropHandler.class);
+	}
+
 	interface Handler {
 
 	}
@@ -85,4 +98,8 @@ public class SimpleSelectorTests {
 
 	}
 
+	@PlatformMatcher(platform = "android")
+	private class WithAliasPropHandler implements Handler {
+
+	}
 }

@@ -1,6 +1,7 @@
 package com.github.navi.core.matcher;
 
 import com.github.navi.core.MatchResult;
+import com.github.navi.core.MatcherDescription;
 import org.junit.Test;
 
 import java.lang.annotation.Annotation;
@@ -33,7 +34,7 @@ public class EqualMatcherTests {
 	@Test
 	public void simple() {
 		TestRequest testRequest = new TestRequest("stark");
-		MatchResult matchResult = equalsMatcherProcessor.process(testRequest, starkOrThor);
+		MatchResult matchResult = equalsMatcherProcessor.process(testRequest, new MatcherDescription<>(starkOrThor));
 		assertThat(matchResult).isEqualTo(MatchResult.ACCEPT);
 	}
 
@@ -41,15 +42,15 @@ public class EqualMatcherTests {
 	public void match_multi_values() {
 		Map<String, String> request = new HashMap<>();
 		request.put("username", "stark");
-		MatchResult matchResult = equalsMatcherProcessor.process(request, starkOrThor);
+		MatchResult matchResult = equalsMatcherProcessor.process(request, new MatcherDescription<>(starkOrThor));
 		assertThat(matchResult).isEqualTo(MatchResult.ACCEPT);
 
 		request.put("username", "thor");
-		matchResult = equalsMatcherProcessor.process(request, starkOrThor);
+		matchResult = equalsMatcherProcessor.process(request, new MatcherDescription<>(starkOrThor));
 		assertThat(matchResult).isEqualTo(MatchResult.ACCEPT);
 
 		request.put("username", "rogers");
-		matchResult = equalsMatcherProcessor.process(request, starkOrThor);
+		matchResult = equalsMatcherProcessor.process(request, new MatcherDescription<>(starkOrThor));
 		assertThat(matchResult).isEqualTo(MatchResult.REJECT);
 	}
 
@@ -77,7 +78,7 @@ public class EqualMatcherTests {
 		};
 
 		// When
-		MatchResult matchResult = equalsMatcherProcessor.process(request, equalMatcher);
+		MatchResult matchResult = equalsMatcherProcessor.process(request, new MatcherDescription<>(equalMatcher));
 
 		// Then
 		assertThat(matchResult).isEqualTo(MatchResult.ACCEPT);
@@ -87,7 +88,8 @@ public class EqualMatcherTests {
 	public void doMatchWithMapRequest() {
 		Map<String, String> mapRequest = new HashMap<>();
 		mapRequest.put("username", "stark");
-		MatchResult matchResult = equalsMatcherProcessor.process(mapRequest, starkOrThor);
+		MatchResult matchResult = equalsMatcherProcessor.process(mapRequest,
+				new MatcherDescription<>(starkOrThor));
 		assertThat(matchResult).isEqualTo(MatchResult.ACCEPT);
 	}
 

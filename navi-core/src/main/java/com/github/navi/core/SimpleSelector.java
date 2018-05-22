@@ -3,6 +3,7 @@ package com.github.navi.core;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,13 +14,23 @@ public class SimpleSelector extends AbstractSelector {
 	private Map<Class<?>, Set> candidatesByType = new HashMap<>();
 
 	@SuppressWarnings("unchecked")
-	public void registerCandidates(Class<?> candidateClass, Set candidates) {
-		Collection existed = this.candidatesByType.get(candidateClass);
+	public void registerCandidates(Class<?> candidateType, Set candidates) {
+		Collection existed = this.candidatesByType.get(candidateType);
 		if (existed == null) {
-			this.candidatesByType.put(candidateClass, candidates);
+			this.candidatesByType.put(candidateType, candidates);
 		} else {
 			existed.addAll(candidates);
 		}
+	}
+
+	public void registerCandidate(Class<?> candidateType, Object candidate) {
+		Set existed = this.candidatesByType.get(candidateType);
+		if (existed == null) {
+			existed = new HashSet();
+			candidatesByType.put(candidateType, existed);
+		}
+
+		existed.add(candidate);
 	}
 
 	@SuppressWarnings("unchecked")

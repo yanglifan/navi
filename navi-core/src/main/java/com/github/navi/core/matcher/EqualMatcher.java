@@ -1,6 +1,7 @@
 package com.github.navi.core.matcher;
 
 import com.github.navi.core.MatchResult;
+import com.github.navi.core.MatcherDescription;
 import com.github.navi.core.MatcherType;
 
 import java.lang.annotation.Documented;
@@ -20,7 +21,7 @@ import java.util.List;
 public @interface EqualMatcher {
 	String propertyPath();
 
-	String[] expectValue();
+	String[] expectValue() default "";
 
 	class Processor extends OnePropertyMatcherProcessor<EqualMatcher> {
 
@@ -30,7 +31,9 @@ public @interface EqualMatcher {
 		}
 
 		@Override
-		protected MatchResult doProcess(Object request, EqualMatcher matcherAnnotation) {
+		protected MatchResult doProcess(Object request,
+				MatcherDescription<EqualMatcher> matcherDescription) {
+			EqualMatcher matcherAnnotation = matcherDescription.getMatcher();
 			List<String> expectValueList = Arrays.asList(matcherAnnotation.expectValue());
 			boolean isContains = expectValueList.contains(request.toString());
 			return isContains ? MatchResult.ACCEPT : MatchResult.REJECT;
