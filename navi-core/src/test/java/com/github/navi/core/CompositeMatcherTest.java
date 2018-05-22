@@ -4,6 +4,10 @@ import com.github.navi.core.matcher.EqualMatcher;
 import com.github.navi.core.matcher.VersionMatcher;
 import org.junit.Test;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -11,6 +15,8 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
 @VersionMatcher(versionRange = "[1.0.0,2.0.0)")
 @EqualMatcher(propertyPath = "platform", expectValue = "android")
 @CompositeMatcherType
@@ -26,7 +32,7 @@ class AndroidV1Handler implements Handler {
 /**
  * @author Yang Lifan
  */
-public class CompositeMatcherTests {
+public class CompositeMatcherTest {
 	@Test
 	public void main() {
 		// Given

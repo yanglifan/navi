@@ -1,6 +1,7 @@
 package com.github.navi.core.matcher;
 
 import com.github.navi.core.MatchResult;
+import com.github.navi.core.MatcherDescription;
 import org.junit.Test;
 
 import java.lang.annotation.Annotation;
@@ -12,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Yang Lifan
  */
-public class VersionMatcherTests {
+public class VersionMatcherTest {
 	private VersionMatcher.Processor processor = new VersionMatcher.Processor();
 
 	@Test
@@ -45,9 +46,9 @@ public class VersionMatcherTests {
 		};
 
 		// when
-		MatchResult v9_0_0_Result = processor.process(v9_0_0_Request, versionMatcher);
-		MatchResult v9_0_11_Result = processor.process(v9_0_11_Request, versionMatcher);
-		MatchResult v9_1_0_Result = processor.process(v9_1_0_Request, versionMatcher);
+		MatchResult v9_0_0_Result = processor.process(v9_0_0_Request, new MatcherDescription<>(versionMatcher));
+		MatchResult v9_0_11_Result = processor.process(v9_0_11_Request, new MatcherDescription<>(versionMatcher));
+		MatchResult v9_1_0_Result = processor.process(v9_1_0_Request, new MatcherDescription<>(versionMatcher));
 
 		// then
 		assertThat(v9_0_0_Result).isEqualTo(MatchResult.ACCEPT);
@@ -85,9 +86,12 @@ public class VersionMatcherTests {
 		};
 
 		// when
-		MatchResult v9_0_11_Result = processor.process(v9_0_11_Request, versionMatcher);
-		MatchResult v9_1_0_Result = processor.process(v9_1_0_Request, versionMatcher);
-		MatchResult v9_1_20_Result = processor.process(v9_1_20_Request, versionMatcher);
+		MatchResult v9_0_11_Result =
+				processor.process(v9_0_11_Request, new MatcherDescription<>(versionMatcher));
+		MatchResult v9_1_0_Result =
+				processor.process(v9_1_0_Request, new MatcherDescription<>(versionMatcher));
+		MatchResult v9_1_20_Result =
+				processor.process(v9_1_20_Request, new MatcherDescription<>(versionMatcher));
 
 		// then
 		assertThat(v9_0_11_Result).isEqualTo(MatchResult.REJECT);
@@ -125,9 +129,12 @@ public class VersionMatcherTests {
 		};
 
 		// when
-		MatchResult v9_0_11_Result = processor.process(v9_0_11_Request, versionMatcher);
-		MatchResult v9_1_0_Result = processor.process(v9_1_0_Request, versionMatcher);
-		MatchResult v9_1_20_Result = processor.process(v9_1_20_Request, versionMatcher);
+		MatchResult v9_0_11_Result =
+				processor.process(v9_0_11_Request, new MatcherDescription<>(versionMatcher));
+		MatchResult v9_1_0_Result =
+				processor.process(v9_1_0_Request, new MatcherDescription<>(versionMatcher));
+		MatchResult v9_1_20_Result =
+				processor.process(v9_1_20_Request, new MatcherDescription<>(versionMatcher));
 
 		// then
 		assertThat(v9_0_11_Result).isEqualTo(MatchResult.ACCEPT);

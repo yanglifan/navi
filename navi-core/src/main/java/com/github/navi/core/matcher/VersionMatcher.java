@@ -1,6 +1,7 @@
 package com.github.navi.core.matcher;
 
 import com.github.navi.core.MatchResult;
+import com.github.navi.core.MatcherDescription;
 import com.github.navi.core.MatcherType;
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,11 +34,14 @@ public @interface VersionMatcher {
 		}
 
 		@Override
-		protected MatchResult doProcess(Object request, VersionMatcher matcherAnnotation) {
+		protected MatchResult doProcess(Object request,
+				MatcherDescription<VersionMatcher> matcherDescription) {
 			String version = request.toString();
 			if (StringUtils.isEmpty(version) || ALL_VERSIONS.equals(version)) {
 				return MatchResult.NEUTRAL;
 			}
+
+			VersionMatcher matcherAnnotation = matcherDescription.getMatcher();
 
 			VersionRange versionRange = VersionRange.fromString(matcherAnnotation.versionRange());
 

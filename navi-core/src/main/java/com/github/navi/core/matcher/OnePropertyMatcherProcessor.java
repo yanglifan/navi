@@ -1,6 +1,7 @@
 package com.github.navi.core.matcher;
 
 import com.github.navi.core.MatchResult;
+import com.github.navi.core.MatcherDescription;
 import com.github.navi.core.MatcherProcessor;
 import org.apache.commons.beanutils.PropertyUtils;
 
@@ -20,8 +21,8 @@ public abstract class OnePropertyMatcherProcessor<A extends Annotation>
 	private static final String PROPERTY_SEPARATOR_REGEX = "\\.";
 
 	@Override
-	public MatchResult process(Object request, A matcherAnnotation) {
-		String propPath = getPropertyPath(matcherAnnotation);
+	public MatchResult process(Object request, MatcherDescription<A> matcherDescription) {
+		String propPath = getPropertyPath(matcherDescription.getMatcher());
 		List<String> properties = toPropertyList(propPath);
 
 		Object result = request;
@@ -31,7 +32,7 @@ public abstract class OnePropertyMatcherProcessor<A extends Annotation>
 			return MatchResult.REJECT;
 		}
 
-		return doProcess(result, matcherAnnotation);
+		return doProcess(result, matcherDescription);
 	}
 
 	private Object getFinalResult(List<String> properties, Object result) throws IllegalAccessException,
@@ -54,5 +55,6 @@ public abstract class OnePropertyMatcherProcessor<A extends Annotation>
 
 	protected abstract String getPropertyPath(A matcherAnnotation);
 
-	protected abstract MatchResult doProcess(Object request, A matcherAnnotation);
+	protected abstract MatchResult doProcess(Object request,
+			MatcherDescription<A> matcherDescription);
 }

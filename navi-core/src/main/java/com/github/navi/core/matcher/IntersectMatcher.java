@@ -1,6 +1,7 @@
 package com.github.navi.core.matcher;
 
 import com.github.navi.core.MatchResult;
+import com.github.navi.core.MatcherDescription;
 import com.github.navi.core.MatcherType;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -35,7 +36,10 @@ public @interface IntersectMatcher {
 		}
 
 		@Override
-		protected MatchResult doProcess(Object property, IntersectMatcher matcherAnnotation) {
+		protected MatchResult doProcess(Object property,
+				MatcherDescription<IntersectMatcher > matcherDescription) {
+			IntersectMatcher matcherAnnotation = matcherDescription.getMatcher();
+
 			List<String> expectValueList = Arrays.asList(matcherAnnotation.expectValue());
 
 			boolean isIntersected;
