@@ -7,7 +7,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -66,7 +65,13 @@ public abstract class AbstractSelector implements Selector {
 	}
 
 	private Map<Annotation, MatcherDescription> getMatcherAnnotations(Object candidate) {
-		Annotation[] annotations = candidate.getClass().getAnnotations();
+		Annotation[] annotations;
+		if (candidate instanceof Annotation) {
+			annotations = ((Annotation) candidate).annotationType().getAnnotations();
+		} else {
+			annotations = candidate.getClass().getAnnotations();
+		}
+
 		Map<Annotation, MatcherDescription> matcherDescriptionMap = new HashMap<>();
 
 		for (Annotation annotationOnCandidate : annotations) {
@@ -85,8 +90,13 @@ public abstract class AbstractSelector implements Selector {
 			return;
 		}
 
-		Map<Annotation, MatcherDescription> subMatcherDescriptionMap
-				= getMatcherAnnotations(annotationOnCandidate);
+		Annotation[] annotations = annotationOnCandidate.annotationType().getAnnotations();
+		for (Annotation annotation : annotations) {
+			processMatcherType(annotation, matcherDescriptionMap);
+		}
+
+		Map<Annotation, MatcherDescription> subMatcherDescriptionMap =
+				getMatcherAnnotations(compositeMatcherType);
 
 		subMatcherDescriptionMap = parseAliasProps(annotationOnCandidate, subMatcherDescriptionMap);
 
@@ -120,7 +130,7 @@ public abstract class AbstractSelector implements Selector {
 
 			String aliasedValue;
 			try {
-				aliasedValue = (String) aliasedPropMethod.invoke(compositeMatcher.annotationType());
+				aliasedValue = (String) aliasedPropMethod.invoke(compositeMatcher);
 			} catch (IllegalAccessException | InvocationTargetException | NullPointerException e) {
 				throw new RuntimeException(e);
 			}
@@ -136,7 +146,7 @@ public abstract class AbstractSelector implements Selector {
 			Map<String, String> aliasedAttributes = entry.getValue();
 
 			MatcherDescription matcherDescription =
-					new MatcherDescription(matcher, aliasedAttributes);
+					new MatcherDescription<>(matcher, aliasedAttributes);
 
 			aliasedMatcherAnnotationMap.put(matcherType, matcherDescription);
 		}
@@ -157,17 +167,6 @@ public abstract class AbstractSelector implements Selector {
 	}
 
 	private void processMatcherType(Annotation annotationOnCandidate,
-			List<Annotation> allMatcherAnnotations) {
-		MatcherType matcher =
-				annotationOnCandidate.annotationType().getAnnotation(MatcherType.class);
-		if (matcher == null) {
-			return;
-		}
-
-		allMatcherAnnotations.add(annotationOnCandidate);
-	}
-
-	private void processMatcherType(Annotation annotationOnCandidate,
 			Map<Annotation, MatcherDescription> matcherDescriptionMap) {
 		MatcherType matcher =
 				annotationOnCandidate.annotationType().getAnnotation(MatcherType.class);
@@ -177,7 +176,7 @@ public abstract class AbstractSelector implements Selector {
 		}
 
 		matcherDescriptionMap
-				.put(annotationOnCandidate, new MatcherDescription(annotationOnCandidate));
+				.put(annotationOnCandidate, new MatcherDescription<>(annotationOnCandidate));
 	}
 
 	@SuppressWarnings("unchecked")

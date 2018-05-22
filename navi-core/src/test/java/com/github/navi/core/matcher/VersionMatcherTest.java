@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Yang Lifan
  */
-public class VersionMatcherTests {
+public class VersionMatcherTest {
 	private VersionMatcher.Processor processor = new VersionMatcher.Processor();
 
 	@Test

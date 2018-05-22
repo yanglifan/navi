@@ -7,7 +7,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SpringBasedSelectorTests {
+public class SpringBasedSelectorTest {
 	private Selector selector;
 
 	@Before
@@ -18,6 +18,7 @@ public class SpringBasedSelectorTests {
 				SpringBasedSelector.class.getPackage().getName(),
 				AndroidV900CouponHandler.class.getPackage().getName()
 		);
+		applicationContext.register(MatcherProcessorAutoRegister.class);
 		applicationContext.refresh();
 		selector = applicationContext.getBean(SpringBasedSelector.class);
 	}

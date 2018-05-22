@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class IntersectMatcherTests {
+public class IntersectMatcherTest {
 	@Test
 	public void intersect_string() {
 		Map<String, String> request = new HashMap<>();
