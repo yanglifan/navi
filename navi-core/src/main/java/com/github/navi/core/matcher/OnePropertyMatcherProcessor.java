@@ -4,7 +4,6 @@ import com.github.navi.core.MatchResult;
 import com.github.navi.core.MatcherDescription;
 import com.github.navi.core.MatcherProcessor;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -66,13 +65,8 @@ public abstract class OnePropertyMatcherProcessor<A extends Annotation>
 		}
 	}
 
-	private String[] getAliasedValue(Map<String, String> aliasedAttributes) {
-		String aliasValue = aliasedAttributes.get(aliasName());
-		if (StringUtils.isEmpty(aliasValue)) {
-			return null;
-		}
-
-		return new String[]{aliasValue};
+	private String[] getAliasedValue(Map<String, String[]> aliasedAttributes) {
+		return aliasedAttributes.get(aliasName());
 	}
 
 	protected abstract String getPropertyPath(A matcherAnnotation);

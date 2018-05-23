@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class MatcherDescription<A extends Annotation> {
 	private A matcher;
-	private Map<String, String> aliasedAttributes;
+	private Map<String, String[]> aliasedAttributes;
 
 	public MatcherDescription(A matcher) {
 		this.matcher = matcher;
@@ -20,7 +20,7 @@ public class MatcherDescription<A extends Annotation> {
 		return matcher;
 	}
 
-	public Map<String, String> getAliasedAttributes() {
+	public Map<String, String[]> getAliasedAttributes() {
 		return aliasedAttributes;
 	}
 }

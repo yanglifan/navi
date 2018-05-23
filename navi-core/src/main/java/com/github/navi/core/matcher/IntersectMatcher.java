@@ -23,7 +23,7 @@ import java.util.List;
 public @interface IntersectMatcher {
 	String propertyPath();
 
-	String[] expectValue();
+	String[] expectValue() default {};
 
 	String separator() default ",";
 
