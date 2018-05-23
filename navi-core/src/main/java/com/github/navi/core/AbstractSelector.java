@@ -7,7 +7,9 @@ import com.github.navi.core.utils.AnnotationUtils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,12 +46,10 @@ public abstract class AbstractSelector implements Selector {
 	}
 
 	private <T> T doMatch(Object request, T candidate, SelectStrategy<T> selectStrategy) {
-		Map<Annotation, MatcherDescription<?>> matcherDescriptions =
-				getMatcherAnnotations(candidate);
+		List<MatcherDescription<?>> matcherDescriptions = getMatcherDescriptions(candidate);
 
-		for (Map.Entry<Annotation, MatcherDescription<?>> matcherDescriptionEntry
-				: matcherDescriptions.entrySet()) {
-			MatchResult matchResult = doMatch(request, matcherDescriptionEntry.getValue());
+		for (MatcherDescription<?> matcherDescription : matcherDescriptions) {
+			MatchResult matchResult = doMatch(request, matcherDescription);
 
 			if (matchResult == null) {
 				continue;
@@ -65,10 +65,10 @@ public abstract class AbstractSelector implements Selector {
 		return selectStrategy.addCandidate(candidate);
 	}
 
-	private Map<Annotation, MatcherDescription<?>> getMatcherAnnotations(Object candidate) {
+	private List<MatcherDescription<?>> getMatcherDescriptions(Object candidate) {
 		Annotation[] annotations = getAnnotations(candidate);
 
-		Map<Annotation, MatcherDescription<?>> matcherDescriptions = new HashMap<>();
+		List<MatcherDescription<?>> matcherDescriptions = new ArrayList<>();
 
 		for (Annotation annotationOnCandidate : annotations) {
 			processMatcherType(annotationOnCandidate, matcherDescriptions);
@@ -87,7 +87,7 @@ public abstract class AbstractSelector implements Selector {
 	}
 
 	private void processCompositeMatcherType(Annotation annotation,
-			Map<Annotation, MatcherDescription<?>> matcherDescriptions) {
+			List<MatcherDescription<?>> matcherDescriptions) {
 		if (notCompositeMatcher(annotation)) {
 			return;
 		}
@@ -106,14 +106,14 @@ public abstract class AbstractSelector implements Selector {
 		return compositeMatcherType == null;
 	}
 
-	private void merge(Map<Annotation, MatcherDescription<?>> matcherDescriptions,
+	private void merge(List<MatcherDescription<?>> matcherDescriptions,
 			Map<Class<? extends Annotation>, Map<String, String[]>> allAliasedAttributes) {
-		for (Map.Entry<Annotation, MatcherDescription<?>> entry : matcherDescriptions.entrySet()) {
-			Annotation matcher = entry.getKey();
+		for (MatcherDescription<?> matcherDescription : matcherDescriptions) {
+			Annotation matcher = matcherDescription.getMatcher();
 			Class<? extends Annotation> matcherType = AnnotationUtils.toClass(matcher);
 			Map<String, String[]> aliasedAttributes = allAliasedAttributes.get(matcherType);
 			if (aliasedAttributes != null && !aliasedAttributes.isEmpty()) {
-				entry.getValue().getAliasedAttributes().putAll(aliasedAttributes);
+				matcherDescription.getAliasedAttributes().putAll(aliasedAttributes);
 			}
 		}
 	}
@@ -160,17 +160,15 @@ public abstract class AbstractSelector implements Selector {
 		return aliasAttributes.computeIfAbsent(aliasedAnnotation, (a) -> new HashMap<>());
 	}
 
-	private void processMatcherType(Annotation annotationOnCandidate,
-			Map<Annotation, MatcherDescription<?>> matcherDescriptionMap) {
-		MatcherType matcher =
-				annotationOnCandidate.annotationType().getAnnotation(MatcherType.class);
+	private void processMatcherType(Annotation annotation,
+			List<MatcherDescription<?>> matcherDescriptions) {
+		MatcherType matcher = annotation.annotationType().getAnnotation(MatcherType.class);
 
 		if (matcher == null) {
 			return;
 		}
 
-		matcherDescriptionMap
-				.put(annotationOnCandidate, new MatcherDescription<>(annotationOnCandidate));
+		matcherDescriptions.add(new MatcherDescription<>(annotation));
 	}
 
 	@SuppressWarnings("unchecked")
