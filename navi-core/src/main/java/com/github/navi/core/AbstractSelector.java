@@ -85,18 +85,18 @@ public abstract class AbstractSelector implements Selector {
 		}
 	}
 
-	private void processCompositeMatcherType(Annotation annotationOnCandidate,
+	private void processCompositeMatcherType(Annotation annotation,
 			Map<Annotation, MatcherDescription> matcherDescriptions) {
-		if (notCompositeMatcher(annotationOnCandidate)) {
+		if (notCompositeMatcher(annotation)) {
 			return;
 		}
 
-		Annotation[] annotations = annotationOnCandidate.annotationType().getAnnotations();
-		for (Annotation annotation : annotations) {
-			processMatcherType(annotation, matcherDescriptions);
+		Annotation[] subAnnotations = annotation.annotationType().getAnnotations();
+		for (Annotation subAnnotation : subAnnotations) {
+			processMatcherType(subAnnotation, matcherDescriptions);
 		}
 
-		merge(matcherDescriptions, aliasedAttributes(annotationOnCandidate));
+		merge(matcherDescriptions, aliasedAttributes(annotation));
 	}
 
 	private boolean notCompositeMatcher(Annotation annotationOnCandidate) {
@@ -131,7 +131,7 @@ public abstract class AbstractSelector implements Selector {
 
 			Map<String, String> aliasedAttributes =
 					createAliasedAttributesIfAbsent(aliasAttributes, aliasAttribute);
-			aliasedAttributes.put(aliasAttribute.value(), aliasedValue);
+			aliasedAttributes.put(aliasAttribute.attributeFor(), aliasedValue);
 		}
 		return aliasAttributes;
 	}
