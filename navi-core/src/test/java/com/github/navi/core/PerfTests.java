@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * This tests will not run with Maven.
+ *
  * @author Yang Lifan
  */
 public class PerfTests {
