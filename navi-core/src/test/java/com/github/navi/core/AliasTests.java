@@ -24,9 +24,9 @@ public class AliasTests {
 	}
 
 	@Test
-	public void equal_and_version() {
+	public void alias_all() {
 		// Given
-		selector.registerCandidate(Handler.class, new EqualVersionAliasHandler());
+		selector.registerCandidate(Handler.class, new AliasAllHandler());
 		Map<String, String> correctReq = new HashMap<>();
 		correctReq.put("name", "hulk");
 		correctReq.put("clientVersion", "1.5.0");
@@ -35,13 +35,33 @@ public class AliasTests {
 		wrongReq.put("name", "stark");
 		wrongReq.put("clientVersion", "1.5.0");
 
+		// When
+		Handler correctHandler = selector.select(correctReq, Handler.class);
+		Handler wrongHandler = selector.select(wrongReq, Handler.class);
+
+		// Then
+		assertThat(correctHandler).isInstanceOf(AliasAllHandler.class);
+		assertThat(wrongHandler).isNull();
+	}
+
+	@Test
+	public void alias_part() {
+		// Given
+		selector.registerCandidate(Handler.class, new AliasPartHandler());
+		Map<String, String> correctReq = new HashMap<>();
+		correctReq.put("name", "hulk");
+		correctReq.put("clientVersion", "0.1.0");
+
+		Map<String, String> wrongReq = new HashMap<>();
+		wrongReq.put("name", "stark");
+		wrongReq.put("clientVersion", "0.1.0");
 
 		// When
 		Handler correctHandler = selector.select(correctReq, Handler.class);
 		Handler wrongHandler = selector.select(wrongReq, Handler.class);
 
 		// Then
-		assertThat(correctHandler).isInstanceOf(EqualVersionAliasHandler.class);
+		assertThat(correctHandler).isInstanceOf(AliasPartHandler.class);
 		assertThat(wrongHandler).isNull();
 	}
 
@@ -50,7 +70,7 @@ public class AliasTests {
 	@EqualMatcher(propertyPath = "name")
 	@VersionMatcher(propertyPath = "clientVersion")
 	@CompositeMatcherType
-	@interface EqualVersionAlias {
+	@interface AliasAll {
 		@AliasAttribute(annotationFor = EqualMatcher.class, attributeFor = "expectValue")
 		String name();
 
@@ -58,7 +78,21 @@ public class AliasTests {
 		String clientVersionRange();
 	}
 
-	@EqualVersionAlias(name = "hulk", clientVersionRange = "[1.0.0,2.0.0)")
-	private class EqualVersionAliasHandler implements Handler {
+	@SuppressWarnings("unused")
+	@Retention(RetentionPolicy.RUNTIME)
+	@EqualMatcher(propertyPath = "name", expectValue = "hulk")
+	@VersionMatcher(propertyPath = "clientVersion")
+	@CompositeMatcherType
+	@interface AliasPart {
+		@AliasAttribute(annotationFor = VersionMatcher.class, attributeFor = "versionRange")
+		String clientVersionRange();
+	}
+
+	@AliasAll(name = "hulk", clientVersionRange = "[1.0.0,2.0.0)")
+	private class AliasAllHandler implements Handler {
+	}
+
+	@AliasPart(clientVersionRange = "[0.1.0,0.2.0)")
+	private class AliasPartHandler implements Handler {
 	}
 }
