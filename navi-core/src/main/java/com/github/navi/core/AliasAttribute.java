@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Documented
 public @interface AliasAttribute {
-	Class<? extends Annotation> annotationFor() default Annotation.class;
+	Class<? extends Annotation> annotationFor();
 
-	String attributeFor() default "";
+	String attributeFor();
 }

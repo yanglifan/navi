@@ -1,7 +1,6 @@
 package com.github.navi.core.matcher;
 
 import com.github.navi.core.MatchResult;
-import com.github.navi.core.MatcherDescription;
 import com.github.navi.core.MatcherType;
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,7 +24,7 @@ public @interface VersionMatcher {
 
 	String propertyPath() default "version";
 
-	String versionRange();
+	String versionRange() default "";
 
 	class Processor extends OnePropertyMatcherProcessor<VersionMatcher> {
 		@Override
@@ -34,20 +33,28 @@ public @interface VersionMatcher {
 		}
 
 		@Override
-		protected MatchResult doProcess(Object request,
-				MatcherDescription<VersionMatcher> matcherDescription) {
+		protected MatchResult doProcess(Object request, VersionMatcher matcher,
+				String[] expectValues) {
 			String version = request.toString();
 			if (StringUtils.isEmpty(version) || ALL_VERSIONS.equals(version)) {
 				return MatchResult.NEUTRAL;
 			}
 
-			VersionMatcher matcherAnnotation = matcherDescription.getMatcher();
-
-			VersionRange versionRange = VersionRange.fromString(matcherAnnotation.versionRange());
+			VersionRange versionRange = VersionRange.fromString(expectValues[0]);
 
 			boolean within = versionRange.within(version);
 
 			return within ? MatchResult.ACCEPT : MatchResult.REJECT;
+		}
+
+		@Override
+		protected String[] getMatcherValue(VersionMatcher matcher) {
+			return new String[]{matcher.versionRange()};
+		}
+
+		@Override
+		protected String aliasName() {
+			return "versionRange";
 		}
 	}
 
@@ -58,7 +65,7 @@ public @interface VersionMatcher {
 		private Version higherVersion;
 
 		private VersionRange(boolean isOpenLowerBound, Version lowerBound,
-							 boolean isOpenHigherBound, Version higherVersion) {
+				boolean isOpenHigherBound, Version higherVersion) {
 			this.isOpenLowerBound = isOpenLowerBound;
 			this.lowerBound = lowerBound;
 			this.isOpenHigherBound = isOpenHigherBound;

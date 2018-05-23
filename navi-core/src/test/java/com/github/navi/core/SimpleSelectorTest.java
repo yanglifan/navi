@@ -80,10 +80,6 @@ public class SimpleSelectorTest {
 		assertThat(handler).isInstanceOf(WithAliasPropHandler.class);
 	}
 
-	interface Handler {
-
-	}
-
 	private class NoAnno1Handler implements Handler {
 
 	}

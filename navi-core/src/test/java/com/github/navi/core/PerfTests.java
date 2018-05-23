@@ -10,11 +10,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * This tests will not run with Maven.
+ *
  * @author Yang Lifan
  */
 public class PerfTests {
 
-	private static final int TEST_COUNT = 100000;
+	private static final int TEST_COUNT = 1000000;
 
 	@Test
 	public void test_version_matcher() {
