@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Yang Lifan
  */
-public class AliasTests {
+public class AliasTest {
 	private SimpleSelector selector;
 
 	@Before
