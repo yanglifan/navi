@@ -146,7 +146,8 @@ public abstract class AbstractSelector implements Selector {
 		return aliasedValue;
 	}
 
-	private Map<String, String> createAliasedAttributesIfAbsent(Map<Class<? extends Annotation>, Map<String, String>> aliasAttributes, AliasAttribute aliasAttribute) {
+	private Map<String, String> createAliasedAttributesIfAbsent(Map<Class<? extends Annotation>,
+			Map<String, String>> aliasAttributes, AliasAttribute aliasAttribute) {
 		Class<? extends Annotation> aliasedAnnotation = aliasAttribute.annotationFor();
 		return aliasAttributes.computeIfAbsent(aliasedAnnotation, (a) -> new HashMap<>());
 	}

@@ -1,7 +1,6 @@
 package com.github.navi.core.matcher;
 
 import com.github.navi.core.MatchResult;
-import com.github.navi.core.MatcherDescription;
 import com.github.navi.core.MatcherType;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -36,15 +35,13 @@ public @interface IntersectMatcher {
 		}
 
 		@Override
-		protected MatchResult doProcess(Object property,
-				MatcherDescription<IntersectMatcher > matcherDescription) {
-			IntersectMatcher matcherAnnotation = matcherDescription.getMatcher();
-
-			List<String> expectValueList = Arrays.asList(matcherAnnotation.expectValue());
+		protected MatchResult doProcess(Object property, IntersectMatcher matcher,
+				String[] expectValues) {
+			List<String> expectValueList = Arrays.asList(expectValues);
 
 			boolean isIntersected;
 			if (property instanceof String) {
-				isIntersected = isIntersectOnString(property, expectValueList, matcherAnnotation.separator());
+				isIntersected = isIntersectOnString(property, expectValueList, matcher.separator());
 			} else if (isStringCollection(property)) {
 				isIntersected = isIntersectOnCollection(property, expectValueList);
 			} else {
@@ -52,6 +49,16 @@ public @interface IntersectMatcher {
 			}
 
 			return isIntersected ? MatchResult.ACCEPT : MatchResult.REJECT;
+		}
+
+		@Override
+		protected String[] getMatcherValue(IntersectMatcher matcher) {
+			return matcher.expectValue();
+		}
+
+		@Override
+		protected String aliasName() {
+			return "expectValue";
 		}
 
 		private boolean isStringCollection(Object property) {
@@ -69,7 +76,8 @@ public @interface IntersectMatcher {
 			return true;
 		}
 
-		private boolean isIntersectOnString(Object property, List<String> expectValueList, String separator) {
+		private boolean isIntersectOnString(Object property, List<String> expectValueList,
+				String separator) {
 			if (!(property instanceof String)) {
 				return false;
 			}
@@ -83,7 +91,8 @@ public @interface IntersectMatcher {
 		private boolean isIntersectOnCollection(Object property, List<String> expectValueList) {
 			Collection<String> stringCollection = (Collection<String>) property;
 			stringCollection = trimStringCollection(stringCollection);
-			Collection intersectResult = CollectionUtils.intersection(expectValueList, stringCollection);
+			Collection intersectResult =
+					CollectionUtils.intersection(expectValueList, stringCollection);
 			return !intersectResult.isEmpty();
 		}
 

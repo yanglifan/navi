@@ -4,12 +4,14 @@ import com.github.navi.core.MatchResult;
 import com.github.navi.core.MatcherDescription;
 import com.github.navi.core.MatcherProcessor;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Yang Lifan
@@ -25,18 +27,20 @@ public abstract class OnePropertyMatcherProcessor<A extends Annotation>
 		String propPath = getPropertyPath(matcherDescription.getMatcher());
 		List<String> properties = toPropertyList(propPath);
 
-		Object result = request;
+		Object valueFromRequest = request;
 		try {
-			result = getFinalResult(properties, result);
+			valueFromRequest = getValueFromRequest(properties, valueFromRequest);
 		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 			return MatchResult.REJECT;
 		}
 
-		return doProcess(result, matcherDescription);
+		String[] expectValues = getExpectValues(matcherDescription);
+
+		return doProcess(valueFromRequest, matcherDescription.getMatcher(), expectValues);
 	}
 
-	private Object getFinalResult(List<String> properties, Object result) throws IllegalAccessException,
-			InvocationTargetException, NoSuchMethodException {
+	private Object getValueFromRequest(List<String> properties, Object result)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		for (String prop : properties) {
 			// TODO Do null assert
 			result = PropertyUtils.getProperty(result, prop);
@@ -53,8 +57,29 @@ public abstract class OnePropertyMatcherProcessor<A extends Annotation>
 		}
 	}
 
+	private String[] getExpectValues(MatcherDescription<A> matcherDescription) {
+		String[] aliasedValues = getAliasedValue(matcherDescription.getAliasedAttributes());
+		if (aliasedValues == null) {
+			return getMatcherValue(matcherDescription.getMatcher());
+		} else {
+			return aliasedValues;
+		}
+	}
+
+	private String[] getAliasedValue(Map<String, String> aliasedAttributes) {
+		String aliasValue = aliasedAttributes.get(aliasName());
+		if (StringUtils.isEmpty(aliasValue)) {
+			return null;
+		}
+
+		return new String[]{aliasValue};
+	}
+
 	protected abstract String getPropertyPath(A matcherAnnotation);
 
-	protected abstract MatchResult doProcess(Object request,
-			MatcherDescription<A> matcherDescription);
+	protected abstract MatchResult doProcess(Object request, A matcher, String[] expectValues);
+
+	protected abstract String[] getMatcherValue(A matcher);
+
+	protected abstract String aliasName();
 }
