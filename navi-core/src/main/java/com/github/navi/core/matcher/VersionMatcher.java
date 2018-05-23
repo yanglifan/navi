@@ -24,7 +24,7 @@ public @interface VersionMatcher {
 
 	String propertyPath() default "version";
 
-	String versionRange();
+	String versionRange() default "";
 
 	class Processor extends OnePropertyMatcherProcessor<VersionMatcher> {
 		@Override
