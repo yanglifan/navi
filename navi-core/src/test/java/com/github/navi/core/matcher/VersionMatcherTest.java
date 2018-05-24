@@ -1,6 +1,5 @@
 package com.github.navi.core.matcher;
 
-import com.github.navi.core.BaseMatcherTest;
 import com.github.navi.core.Handler;
 import org.junit.Test;
 

@@ -17,8 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class EqualMatcherTest {
 
-	private EqualMatcher.Processor equalsMatcherProcessor = new EqualMatcher.Processor();
-
 	private SimpleSelector selector;
 
 	@Before
@@ -70,6 +68,5 @@ public class EqualMatcherTest {
 	@EqualMatcher(propertyPath = "firstName", expectValue = "michael")
 	@EqualMatcher(propertyPath = "lastName", expectValue = "jordan")
 	private class MichaelJordan implements Handler {
-
 	}
 }

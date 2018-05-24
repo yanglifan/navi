@@ -1,5 +1,7 @@
-package com.github.navi.core;
+package com.github.navi.core.matcher;
 
+import com.github.navi.core.Handler;
+import com.github.navi.core.SimpleSelector;
 import org.junit.Before;
 
 /**
