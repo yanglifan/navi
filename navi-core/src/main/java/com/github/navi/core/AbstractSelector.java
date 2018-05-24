@@ -1,6 +1,6 @@
 package com.github.navi.core;
 
-import com.github.navi.core.alias.AliasAttributes;
+import com.github.navi.core.alias.CompositeAliasAttributes;
 import com.github.navi.core.exception.InvalidMatcherException;
 import com.github.navi.core.exception.SelectStrategyCreationException;
 import com.github.navi.core.strategy.ScoreSelectStrategy;
@@ -130,22 +130,22 @@ public abstract class AbstractSelector implements Selector {
 
 		readMatcherDefinitions(annotation, matcherDefinitions);
 
-		mergeAliasAttributes2(matcherDefinitions, readAliasedAttributes(annotation));
+		mergeAliasAttributes(matcherDefinitions, readAliasedAttributes(annotation));
 	}
 
 	private boolean notCompositeMatcher(Annotation annotation) {
 		return !annotatedBy(annotation, CompositeMatcherType.class);
 	}
 
-	private void mergeAliasAttributes2(List<MatcherDefinition<?>> matcherDefinitions,
-			AliasAttributes aliasAttributes) {
+	private void mergeAliasAttributes(List<MatcherDefinition<?>> matcherDefinitions,
+			CompositeAliasAttributes compositeAliasAttributes) {
 		for (MatcherDefinition<?> matcherDefinition : matcherDefinitions) {
-			aliasAttributes.mergeInto(matcherDefinition);
+			compositeAliasAttributes.mergeInto(matcherDefinition);
 		}
 	}
 
-	private AliasAttributes readAliasedAttributes(Annotation compositeMatcher) {
-		AliasAttributes aliasAttributes = new AliasAttributes();
+	private CompositeAliasAttributes readAliasedAttributes(Annotation compositeMatcher) {
+		CompositeAliasAttributes compositeAliasAttributes = new CompositeAliasAttributes();
 		Method[] methods = compositeMatcher.annotationType().getMethods();
 		for (Method aliasAttrMethod : methods) {
 			AliasFor aliasFor = aliasAttrMethod.getAnnotation(AliasFor.class);
@@ -155,9 +155,9 @@ public abstract class AbstractSelector implements Selector {
 
 			String[] aliasValue = getAliasValue(compositeMatcher, aliasAttrMethod);
 
-			aliasAttributes.add(aliasFor, aliasValue);
+			compositeAliasAttributes.add(aliasFor, aliasValue);
 		}
-		return aliasAttributes;
+		return compositeAliasAttributes;
 	}
 
 	private String[] getAliasValue(Annotation compositeMatcher, Method aliasedPropMethod) {

@@ -65,7 +65,7 @@ public class AliasTest {
 		assertThat(wrongHandler).isNull();
 	}
 
-//	@Test
+	@Test
 	public void labeled_alias() {
 		// Given
 		Map<String, String> request = new HashMap<>();
@@ -106,14 +106,14 @@ public class AliasTest {
 
 	@SuppressWarnings("unused")
 	@Retention(RetentionPolicy.RUNTIME)
-	@EqualMatcher(propertyPath = "name", label = "name")
-	@EqualMatcher(propertyPath = "department", label = "department")
+	@EqualMatcher(propertyPath = "name", aliasLabel = "name")
+	@EqualMatcher(propertyPath = "department", aliasLabel = "department")
 	@CompositeMatcherType
 	@interface LabeledAlias {
-		@AliasFor(annotationFor = EqualMatcher.class, attributeFor = "expectValue")
+		@AliasFor(annotationFor = EqualMatcher.class, attributeFor = "expectValue", label = "name")
 		String name();
 
-		@AliasFor(annotationFor = EqualMatcher.class, attributeFor = "expectValue")
+		@AliasFor(annotationFor = EqualMatcher.class, attributeFor = "expectValue", label = "department")
 		String department();
 	}
 

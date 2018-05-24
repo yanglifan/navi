@@ -1,12 +1,10 @@
 package com.github.navi.core;
 
-import com.github.navi.core.alias.AliasAttribute;
+import com.github.navi.core.alias.AliasAttributes;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Yang Lifan
@@ -16,21 +14,23 @@ public class MatcherDefinition<A extends Annotation> {
 
 	private A matcher;
 	private String aliasLabel;
-	private Map<String, String[]> aliasedAttributes;
-	private AliasAttribute aliasAttribute;
+	private AliasAttributes aliasAttributes;
 
-	public MatcherDefinition(A matcher) {
+	MatcherDefinition(A matcher) {
 		this.matcher = matcher;
 		this.aliasLabel = getAliasLabel(matcher);
-		aliasedAttributes = new HashMap<>();
 	}
 
-	public AliasAttribute getAliasAttribute() {
-		return aliasAttribute;
+	public String[] getAliasAttribute(String aliasAttributeName) {
+		if (aliasAttributes == null) {
+			return null;
+		}
+
+		return aliasAttributes.getValues().get(aliasAttributeName);
 	}
 
-	public void setAliasAttribute(AliasAttribute aliasAttribute) {
-		this.aliasAttribute = aliasAttribute;
+	public void setAliasAttributes(AliasAttributes aliasAttributes) {
+		this.aliasAttributes = aliasAttributes;
 	}
 
 	public String getAliasLabel() {
@@ -39,7 +39,8 @@ public class MatcherDefinition<A extends Annotation> {
 
 	private String getAliasLabel(A matcher) {
 		try {
-			Method method = matcher.annotationType().getClass().getMethod(ALIAS_LABEL);
+			Class<? extends Annotation> annotationType = matcher.annotationType();
+			Method method = annotationType.getMethod(ALIAS_LABEL);
 			return (String) method.invoke(matcher);
 		} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException
 				| ClassCastException e) {
@@ -49,9 +50,5 @@ public class MatcherDefinition<A extends Annotation> {
 
 	public A getMatcher() {
 		return matcher;
-	}
-
-	public Map<String, String[]> getAliasedAttributes() {
-		return aliasedAttributes;
 	}
 }
