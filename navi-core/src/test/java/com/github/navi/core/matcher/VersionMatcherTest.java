@@ -1,7 +1,7 @@
 package com.github.navi.core.matcher;
 
 import com.github.navi.core.MatchResult;
-import com.github.navi.core.MatcherDescription;
+import com.github.navi.core.MatcherDefinition;
 import org.junit.Test;
 
 import java.lang.annotation.Annotation;
@@ -46,9 +46,9 @@ public class VersionMatcherTest {
 		};
 
 		// when
-		MatchResult v9_0_0_Result = processor.process(v9_0_0_Request, new MatcherDescription<>(versionMatcher));
-		MatchResult v9_0_11_Result = processor.process(v9_0_11_Request, new MatcherDescription<>(versionMatcher));
-		MatchResult v9_1_0_Result = processor.process(v9_1_0_Request, new MatcherDescription<>(versionMatcher));
+		MatchResult v9_0_0_Result = processor.process(v9_0_0_Request, new MatcherDefinition<>(versionMatcher));
+		MatchResult v9_0_11_Result = processor.process(v9_0_11_Request, new MatcherDefinition<>(versionMatcher));
+		MatchResult v9_1_0_Result = processor.process(v9_1_0_Request, new MatcherDefinition<>(versionMatcher));
 
 		// then
 		assertThat(v9_0_0_Result).isEqualTo(MatchResult.ACCEPT);
@@ -87,11 +87,11 @@ public class VersionMatcherTest {
 
 		// when
 		MatchResult v9_0_11_Result =
-				processor.process(v9_0_11_Request, new MatcherDescription<>(versionMatcher));
+				processor.process(v9_0_11_Request, new MatcherDefinition<>(versionMatcher));
 		MatchResult v9_1_0_Result =
-				processor.process(v9_1_0_Request, new MatcherDescription<>(versionMatcher));
+				processor.process(v9_1_0_Request, new MatcherDefinition<>(versionMatcher));
 		MatchResult v9_1_20_Result =
-				processor.process(v9_1_20_Request, new MatcherDescription<>(versionMatcher));
+				processor.process(v9_1_20_Request, new MatcherDefinition<>(versionMatcher));
 
 		// then
 		assertThat(v9_0_11_Result).isEqualTo(MatchResult.REJECT);
@@ -130,11 +130,11 @@ public class VersionMatcherTest {
 
 		// when
 		MatchResult v9_0_11_Result =
-				processor.process(v9_0_11_Request, new MatcherDescription<>(versionMatcher));
+				processor.process(v9_0_11_Request, new MatcherDefinition<>(versionMatcher));
 		MatchResult v9_1_0_Result =
-				processor.process(v9_1_0_Request, new MatcherDescription<>(versionMatcher));
+				processor.process(v9_1_0_Request, new MatcherDefinition<>(versionMatcher));
 		MatchResult v9_1_20_Result =
-				processor.process(v9_1_20_Request, new MatcherDescription<>(versionMatcher));
+				processor.process(v9_1_20_Request, new MatcherDefinition<>(versionMatcher));
 
 		// then
 		assertThat(v9_0_11_Result).isEqualTo(MatchResult.ACCEPT);

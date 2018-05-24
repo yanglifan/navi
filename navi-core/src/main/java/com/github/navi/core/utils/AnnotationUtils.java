@@ -16,4 +16,9 @@ public abstract class AnnotationUtils {
 		}
 		throw new RuntimeException("Not annotation");
 	}
+
+	public static boolean annotatedBy(Annotation annotation,
+			Class<? extends Annotation> annotationType) {
+		return annotation.annotationType().isAnnotationPresent(annotationType);
+	}
 }

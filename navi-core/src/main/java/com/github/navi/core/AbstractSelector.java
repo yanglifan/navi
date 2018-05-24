@@ -1,5 +1,6 @@
 package com.github.navi.core;
 
+import com.github.navi.core.exception.InvalidMatcherException;
 import com.github.navi.core.exception.SelectStrategyCreationException;
 import com.github.navi.core.strategy.ScoreSelectStrategy;
 import com.github.navi.core.utils.AnnotationUtils;
@@ -8,9 +9,14 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import static com.github.navi.core.utils.AnnotationUtils.annotatedBy;
 
 /**
  * @author Yang Lifan
@@ -46,10 +52,12 @@ public abstract class AbstractSelector implements Selector {
 	}
 
 	private <T> T doMatch(Object request, T candidate, SelectStrategy<T> selectStrategy) {
-		List<MatcherDescription<?>> matcherDescriptions = getMatcherDescriptions(candidate);
+		List<MatcherDefinition<?>> matcherDefinitions = new ArrayList<>();
 
-		for (MatcherDescription<?> matcherDescription : matcherDescriptions) {
-			MatchResult matchResult = doMatch(request, matcherDescription);
+		readMatcherDefinitions(candidate, matcherDefinitions);
+
+		for (MatcherDefinition<?> matcherDefinition : matcherDefinitions) {
+			MatchResult matchResult = doMatch(request, matcherDefinition);
 
 			if (matchResult == null) {
 				continue;
@@ -65,55 +73,80 @@ public abstract class AbstractSelector implements Selector {
 		return selectStrategy.addCandidate(candidate);
 	}
 
-	private List<MatcherDescription<?>> getMatcherDescriptions(Object candidate) {
-		Annotation[] annotations = getAnnotations(candidate);
+	private void readMatcherDefinitions(Object candidate,
+			List<MatcherDefinition<?>> matcherDefinitions) {
+		List<Annotation> annotations = getTopLevelMatcherAnnotation(candidate);
 
-		List<MatcherDescription<?>> matcherDescriptions = new ArrayList<>();
-
-		for (Annotation annotationOnCandidate : annotations) {
-			processMatcherType(annotationOnCandidate, matcherDescriptions);
-			processCompositeMatcherType(annotationOnCandidate, matcherDescriptions);
+		for (Annotation annotation : annotations) {
+			readDefinitionFromMatcher(annotation, matcherDefinitions);
+			readDefinitionFromMatcherContainer(annotation, matcherDefinitions);
+			readDefinitionFromCompositeMatcher(annotation, matcherDefinitions);
 		}
-
-		return matcherDescriptions;
 	}
 
-	private Annotation[] getAnnotations(Object candidate) {
+	private void readDefinitionFromMatcherContainer(Annotation annotation,
+			List<MatcherDefinition<?>> matcherDefinitions) {
+		if (!annotatedBy(annotation, MatcherContainer.class)) {
+			return;
+		}
+
+		readMatcherDefinitions(annotation, matcherDefinitions);
+	}
+
+	private List<Annotation> getTopLevelMatcherAnnotation(Object candidate) {
+		Annotation[] annotationArray;
 		if (candidate instanceof Annotation) {
-			return ((Annotation) candidate).annotationType().getAnnotations();
+			annotationArray = getAnnotationsFromAnnotation((Annotation) candidate);
 		} else {
-			return candidate.getClass().getAnnotations();
+			annotationArray = candidate.getClass().getAnnotations();
+		}
+
+		return Arrays.stream(annotationArray)
+				.filter(isMatcher())
+				.collect(Collectors.toList());
+	}
+
+	private Annotation[] getAnnotationsFromAnnotation(Annotation annotation) {
+		if (annotatedBy(annotation, MatcherContainer.class)) {
+			try {
+				Method valueMethod = annotation.getClass().getMethod("value");
+				return (Annotation[]) valueMethod.invoke(annotation);
+			} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+				throw new InvalidMatcherException(annotation + " is not a matcher container");
+			}
+		} else {
+			return annotation.annotationType().getAnnotations();
 		}
 	}
 
-	private void processCompositeMatcherType(Annotation annotation,
-			List<MatcherDescription<?>> matcherDescriptions) {
+	private Predicate<Annotation> isMatcher() {
+		return a -> annotatedBy(a, MatcherType.class) || annotatedBy(a, CompositeMatcherType.class)
+				|| annotatedBy(a, MatcherContainer.class);
+	}
+
+	private void readDefinitionFromCompositeMatcher(Annotation annotation,
+			List<MatcherDefinition<?>> matcherDefinitions) {
 		if (notCompositeMatcher(annotation)) {
 			return;
 		}
 
-		Annotation[] subAnnotations = annotation.annotationType().getAnnotations();
-		for (Annotation subAnnotation : subAnnotations) {
-			processMatcherType(subAnnotation, matcherDescriptions);
-		}
+		readMatcherDefinitions(annotation, matcherDefinitions);
 
-		merge(matcherDescriptions, aliasedAttributes(annotation));
+		merge(matcherDefinitions, aliasedAttributes(annotation));
 	}
 
-	private boolean notCompositeMatcher(Annotation annotationOnCandidate) {
-		CompositeMatcherType compositeMatcherType =
-				annotationOnCandidate.annotationType().getAnnotation(CompositeMatcherType.class);
-		return compositeMatcherType == null;
+	private boolean notCompositeMatcher(Annotation annotation) {
+		return !annotatedBy(annotation, CompositeMatcherType.class);
 	}
 
-	private void merge(List<MatcherDescription<?>> matcherDescriptions,
+	private void merge(List<MatcherDefinition<?>> matcherDefinitions,
 			Map<Class<? extends Annotation>, Map<String, String[]>> allAliasedAttributes) {
-		for (MatcherDescription<?> matcherDescription : matcherDescriptions) {
-			Annotation matcher = matcherDescription.getMatcher();
+		for (MatcherDefinition<?> matcherDefinition : matcherDefinitions) {
+			Annotation matcher = matcherDefinition.getMatcher();
 			Class<? extends Annotation> matcherType = AnnotationUtils.toClass(matcher);
 			Map<String, String[]> aliasedAttributes = allAliasedAttributes.get(matcherType);
 			if (aliasedAttributes != null && !aliasedAttributes.isEmpty()) {
-				matcherDescription.getAliasedAttributes().putAll(aliasedAttributes);
+				matcherDefinition.getAliasedAttributes().putAll(aliasedAttributes);
 			}
 		}
 	}
@@ -160,21 +193,21 @@ public abstract class AbstractSelector implements Selector {
 		return aliasAttributes.computeIfAbsent(aliasedAnnotation, (a) -> new HashMap<>());
 	}
 
-	private void processMatcherType(Annotation annotation,
-			List<MatcherDescription<?>> matcherDescriptions) {
+	private void readDefinitionFromMatcher(Annotation annotation,
+			List<MatcherDefinition<?>> matcherDefinitions) {
 		MatcherType matcher = annotation.annotationType().getAnnotation(MatcherType.class);
 
 		if (matcher == null) {
 			return;
 		}
 
-		matcherDescriptions.add(new MatcherDescription<>(annotation));
+		matcherDefinitions.add(new MatcherDefinition<>(annotation));
 	}
 
 	@SuppressWarnings("unchecked")
-	private MatchResult doMatch(Object request, MatcherDescription matcherDescription) {
+	private MatchResult doMatch(Object request, MatcherDefinition matcherDefinition) {
 		MatcherType matcherType =
-				matcherDescription.getMatcher().annotationType().getAnnotation(MatcherType.class);
+				matcherDefinition.getMatcher().annotationType().getAnnotation(MatcherType.class);
 
 		MatcherProcessor matcherProcessor = getMatcherProcessor(matcherType.processor());
 
@@ -182,7 +215,7 @@ public abstract class AbstractSelector implements Selector {
 			throw new NullPointerException("Cannot find the matcher processor");
 		}
 
-		return matcherProcessor.process(request, matcherDescription);
+		return matcherProcessor.process(request, matcherDefinition);
 	}
 
 	protected abstract MatcherProcessor getMatcherProcessor(

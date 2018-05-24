@@ -1,7 +1,7 @@
 package com.github.navi.core.matcher;
 
 import com.github.navi.core.MatchResult;
-import com.github.navi.core.MatcherDescription;
+import com.github.navi.core.MatcherDefinition;
 import com.github.navi.core.MatcherProcessor;
 import org.apache.commons.beanutils.PropertyUtils;
 
@@ -22,8 +22,8 @@ public abstract class OnePropertyMatcherProcessor<A extends Annotation>
 	private static final String PROPERTY_SEPARATOR_REGEX = "\\.";
 
 	@Override
-	public MatchResult process(Object request, MatcherDescription<A> matcherDescription) {
-		String propPath = getPropertyPath(matcherDescription.getMatcher());
+	public MatchResult process(Object request, MatcherDefinition<A> matcherDefinition) {
+		String propPath = getPropertyPath(matcherDefinition.getMatcher());
 		List<String> properties = toPropertyList(propPath);
 
 		Object valueFromRequest = request;
@@ -33,9 +33,9 @@ public abstract class OnePropertyMatcherProcessor<A extends Annotation>
 			return MatchResult.REJECT;
 		}
 
-		String[] expectValues = getExpectValues(matcherDescription);
+		String[] expectValues = getExpectValues(matcherDefinition);
 
-		return doProcess(valueFromRequest, matcherDescription.getMatcher(), expectValues);
+		return doProcess(valueFromRequest, matcherDefinition.getMatcher(), expectValues);
 	}
 
 	private Object getValueFromRequest(List<String> properties, Object result)
@@ -56,10 +56,10 @@ public abstract class OnePropertyMatcherProcessor<A extends Annotation>
 		}
 	}
 
-	private String[] getExpectValues(MatcherDescription<A> matcherDescription) {
-		String[] aliasedValues = getAliasedValue(matcherDescription.getAliasedAttributes());
+	private String[] getExpectValues(MatcherDefinition<A> matcherDefinition) {
+		String[] aliasedValues = getAliasedValue(matcherDefinition.getAliasedAttributes());
 		if (aliasedValues == null) {
-			return getMatcherValue(matcherDescription.getMatcher());
+			return getMatcherValue(matcherDefinition.getMatcher());
 		} else {
 			return aliasedValues;
 		}

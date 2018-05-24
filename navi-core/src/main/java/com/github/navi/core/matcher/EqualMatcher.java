@@ -6,6 +6,7 @@ import com.github.navi.core.MatcherType;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -16,6 +17,7 @@ import java.util.List;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
+@Repeatable(EqualMatchers.class)
 @MatcherType(processor = EqualMatcher.Processor.class)
 public @interface EqualMatcher {
 	String propertyPath();
