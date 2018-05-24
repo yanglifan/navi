@@ -16,11 +16,11 @@ Why this project can make these works to be more simple? Actually, at the beginn
 
 These different branches will have different logic, but still need to be integrated with the trunk logic. So how to organize the code? With if...else and switch? That would be a disaster for the maintainability and extendability.
 
- With Navi, developers can implement the complex logic with elegant way.
+With Navi, developers can implement the complex logic with elegant way.
  
- ## How?
+## How?
  
-```JAVA
+```java
 @EqualMatcher(propertyPath = "clientType", expectValue = "android")
 @VersionMatcher(versionRange = "[1.0.0,2.0.0)")
 public class AndroidV1OrderCreateHandler implements OrderCreateHandler {
@@ -30,19 +30,21 @@ public class AndroidV1OrderCreateHandler implements OrderCreateHandler {
 OrderRequest request = new OrderRequest():
 request.setClientType("android");
 request.setVersion("1.5.0");
-OrderCreateHandler handler = selector.select(request, OrderCreateHandler.class);
 
 // this handler is AndroidOrderCreateHandler
 public class OrderCreateService {
     public OrderCreateResponse createOrder(OrderRequest request) {
         // ...
-        // Trunk logic
+        // Trunk Logic
         // ...
         
+        // Branch Logic
         OrderCreateHandler handler = selector.select(request, OrderCreateHandler.class);
         handler.handle(request);
         
-        
+        // ...
+        // Trunk Logic
+        // ...
     }
 }
 ```
