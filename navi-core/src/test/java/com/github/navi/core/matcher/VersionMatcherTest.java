@@ -1,10 +1,8 @@
 package com.github.navi.core.matcher;
 
-import com.github.navi.core.MatchResult;
-import com.github.navi.core.MatcherDefinition;
+import com.github.navi.core.Handler;
 import org.junit.Test;
 
-import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,52 +11,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Yang Lifan
  */
-public class VersionMatcherTest {
-	private VersionMatcher.Processor processor = new VersionMatcher.Processor();
-
+public class VersionMatcherTest extends BaseMatcherTest {
 	@Test
-	public void main() {
-		// given
-		Map<String, String> v9_0_0_Request = new HashMap<>();
-		v9_0_0_Request.put("version", "9.0.0");
+	public void simple_match() {
+		// Given
+		registerHandler(new SimpleVersionHandler());
 
-		Map<String, String> v9_0_11_Request = new HashMap<>();
-		v9_0_11_Request.put("version", "9.0.11");
+		Map<String, String> request = new HashMap<>();
+		request.put("version", "1.5.0");
 
-		Map<String, String> v9_1_0_Request = new HashMap<>();
-		v9_1_0_Request.put("version", "9.1.0");
+		// When
+		Handler handler = selector.select(request, Handler.class);
 
-		VersionMatcher versionMatcher = new VersionMatcher() {
-			@Override
-			public Class<? extends Annotation> annotationType() {
-				return null;
-			}
-
-			@Override
-			public String propertyPath() {
-				return "version";
-			}
-
-			@Override
-			public String versionRange() {
-				return "[9.0.0,9.1.0)";
-			}
-		};
-
-		// when
-		MatchResult v9_0_0_Result = processor.process(v9_0_0_Request, new MatcherDefinition<>(versionMatcher));
-		MatchResult v9_0_11_Result = processor.process(v9_0_11_Request, new MatcherDefinition<>(versionMatcher));
-		MatchResult v9_1_0_Result = processor.process(v9_1_0_Request, new MatcherDefinition<>(versionMatcher));
-
-		// then
-		assertThat(v9_0_0_Result).isEqualTo(MatchResult.ACCEPT);
-		assertThat(v9_0_11_Result).isEqualTo(MatchResult.ACCEPT);
-		assertThat(v9_1_0_Result).isEqualTo(MatchResult.REJECT);
+		// Then
+		assertThat(handler).isInstanceOf(SimpleVersionHandler.class);
 	}
 
 	@Test
 	public void upper_bound_is_all_version() {
-		// given
+		// Given
 		Map<String, String> v9_0_11_Request = new HashMap<>();
 		v9_0_11_Request.put("version", "9.0.11");
 
@@ -68,40 +39,22 @@ public class VersionMatcherTest {
 		Map<String, String> v9_1_20_Request = new HashMap<>();
 		v9_1_20_Request.put("version", "9.1.20");
 
-		VersionMatcher versionMatcher = new VersionMatcher() {
-			@Override
-			public Class<? extends Annotation> annotationType() {
-				return null;
-			}
+		registerHandler(new UpperAllHandler());
 
-			@Override
-			public String propertyPath() {
-				return "version";
-			}
+		// When
+		Handler v9_0_11_Result = selector.select(v9_0_11_Request, Handler.class);
+		Handler v9_1_0_Result = selector.select(v9_1_0_Request, Handler.class);
+		Handler v9_1_20_Result = selector.select(v9_1_20_Request, Handler.class);
 
-			@Override
-			public String versionRange() {
-				return "[9.1.0,*]";
-			}
-		};
-
-		// when
-		MatchResult v9_0_11_Result =
-				processor.process(v9_0_11_Request, new MatcherDefinition<>(versionMatcher));
-		MatchResult v9_1_0_Result =
-				processor.process(v9_1_0_Request, new MatcherDefinition<>(versionMatcher));
-		MatchResult v9_1_20_Result =
-				processor.process(v9_1_20_Request, new MatcherDefinition<>(versionMatcher));
-
-		// then
-		assertThat(v9_0_11_Result).isEqualTo(MatchResult.REJECT);
-		assertThat(v9_1_0_Result).isEqualTo(MatchResult.ACCEPT);
-		assertThat(v9_1_20_Result).isEqualTo(MatchResult.ACCEPT);
+		// Then
+		assertThat(v9_0_11_Result).isNull();
+		assertThat(v9_1_0_Result).isInstanceOf(UpperAllHandler.class);
+		assertThat(v9_1_20_Result).isInstanceOf(UpperAllHandler.class);
 	}
 
 	@Test
 	public void lower_bound_is_all_version() {
-		// given
+		// Given
 		Map<String, String> v9_0_11_Request = new HashMap<>();
 		v9_0_11_Request.put("version", "9.0.11");
 
@@ -111,34 +64,31 @@ public class VersionMatcherTest {
 		Map<String, String> v9_1_20_Request = new HashMap<>();
 		v9_1_20_Request.put("version", "9.1.20");
 
-		VersionMatcher versionMatcher = new VersionMatcher() {
-			@Override
-			public Class<? extends Annotation> annotationType() {
-				return null;
-			}
+		registerHandler(new LowerAllHandler());
+		registerHandler(new UpperAllHandler());
 
-			@Override
-			public String propertyPath() {
-				return "version";
-			}
+		// When
+		Handler v9_0_11_Result = selector.select(v9_0_11_Request, Handler.class);
+		Handler v9_1_0_Result = selector.select(v9_1_0_Request, Handler.class);
+		Handler v9_1_20_Result = selector.select(v9_1_20_Request, Handler.class);
 
-			@Override
-			public String versionRange() {
-				return "[*,9.1.0)";
-			}
-		};
+		// Then
+		assertThat(v9_0_11_Result).isInstanceOf(LowerAllHandler.class);
+		assertThat(v9_1_0_Result).isInstanceOf(UpperAllHandler.class);
+		assertThat(v9_1_20_Result).isInstanceOf(UpperAllHandler.class);
+	}
 
-		// when
-		MatchResult v9_0_11_Result =
-				processor.process(v9_0_11_Request, new MatcherDefinition<>(versionMatcher));
-		MatchResult v9_1_0_Result =
-				processor.process(v9_1_0_Request, new MatcherDefinition<>(versionMatcher));
-		MatchResult v9_1_20_Result =
-				processor.process(v9_1_20_Request, new MatcherDefinition<>(versionMatcher));
+	@VersionMatcher(versionRange = "[9.1.0,*]")
+	private class UpperAllHandler implements Handler {
 
-		// then
-		assertThat(v9_0_11_Result).isEqualTo(MatchResult.ACCEPT);
-		assertThat(v9_1_0_Result).isEqualTo(MatchResult.REJECT);
-		assertThat(v9_1_20_Result).isEqualTo(MatchResult.REJECT);
+	}
+
+	@VersionMatcher(versionRange = "[1.0.0,2.0.0)")
+	private class SimpleVersionHandler implements Handler {
+	}
+
+	@VersionMatcher(versionRange = "[*,9.1.0)")
+	private class LowerAllHandler implements Handler {
+
 	}
 }

@@ -1,6 +1,6 @@
 package com.github.navi.core.matcher;
 
-import com.github.navi.core.AliasAttribute;
+import com.github.navi.core.alias.AliasFor;
 import com.github.navi.core.CompositeMatcherType;
 import com.github.navi.core.Handler;
 import com.github.navi.core.SimpleSelector;
@@ -74,7 +74,7 @@ public class IntersectMatcherTest {
 	@IntersectMatcher(propertyPath = "name")
 	@CompositeMatcherType
 	public @interface AliasIntersectMatcher {
-		@AliasAttribute(annotationFor = IntersectMatcher.class, attributeFor = "expectValue")
+		@AliasFor(annotationFor = IntersectMatcher.class, attributeFor = "expectValue")
 		String[] names();
 	}
 

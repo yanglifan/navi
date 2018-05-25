@@ -1,4 +1,4 @@
-package com.github.navi.core;
+package com.github.navi.core.alias;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
@@ -13,8 +13,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Documented
-public @interface AliasAttribute {
+public @interface AliasFor {
 	Class<? extends Annotation> annotationFor();
 
 	String attributeFor();
+
+	String label() default "";
 }

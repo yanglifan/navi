@@ -1,5 +1,6 @@
 package com.github.navi.core;
 
+import com.github.navi.core.alias.AliasFor;
 import com.github.navi.core.matcher.EqualMatcher;
 
 import java.lang.annotation.ElementType;
@@ -15,6 +16,6 @@ import java.lang.annotation.Target;
 @EqualMatcher(propertyPath = "platform")
 @CompositeMatcherType
 public @interface PlatformMatcher {
-	@AliasAttribute(annotationFor = EqualMatcher.class, attributeFor = "expectValue")
+	@AliasFor(annotationFor = EqualMatcher.class, attributeFor = "expectValue")
 	String platform();
 }

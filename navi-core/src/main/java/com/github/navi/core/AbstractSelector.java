@@ -1,18 +1,17 @@
 package com.github.navi.core;
 
+import com.github.navi.core.alias.AliasFor;
+import com.github.navi.core.alias.AliasAttributesMapping;
 import com.github.navi.core.exception.InvalidMatcherException;
 import com.github.navi.core.exception.SelectStrategyCreationException;
 import com.github.navi.core.strategy.ScoreSelectStrategy;
-import com.github.navi.core.utils.AnnotationUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -132,45 +131,37 @@ public abstract class AbstractSelector implements Selector {
 
 		readMatcherDefinitions(annotation, matcherDefinitions);
 
-		merge(matcherDefinitions, aliasedAttributes(annotation));
+		mergeAliasAttributes(matcherDefinitions, readAliasedAttributes(annotation));
 	}
 
 	private boolean notCompositeMatcher(Annotation annotation) {
 		return !annotatedBy(annotation, CompositeMatcherType.class);
 	}
 
-	private void merge(List<MatcherDefinition<?>> matcherDefinitions,
-			Map<Class<? extends Annotation>, Map<String, String[]>> allAliasedAttributes) {
+	private void mergeAliasAttributes(List<MatcherDefinition<?>> matcherDefinitions,
+			AliasAttributesMapping aliasAttributesMapping) {
 		for (MatcherDefinition<?> matcherDefinition : matcherDefinitions) {
-			Annotation matcher = matcherDefinition.getMatcher();
-			Class<? extends Annotation> matcherType = AnnotationUtils.toClass(matcher);
-			Map<String, String[]> aliasedAttributes = allAliasedAttributes.get(matcherType);
-			if (aliasedAttributes != null && !aliasedAttributes.isEmpty()) {
-				matcherDefinition.getAliasedAttributes().putAll(aliasedAttributes);
-			}
+			aliasAttributesMapping.mergeInto(matcherDefinition);
 		}
 	}
 
-	private Map<Class<? extends Annotation>, Map<String, String[]>> aliasedAttributes(
-			Annotation compositeMatcher) {
-		Map<Class<? extends Annotation>, Map<String, String[]>> aliasAttributes = new HashMap<>();
+	private AliasAttributesMapping readAliasedAttributes(Annotation compositeMatcher) {
+		AliasAttributesMapping aliasAttributesMapping = new AliasAttributesMapping();
 		Method[] methods = compositeMatcher.annotationType().getMethods();
 		for (Method aliasAttrMethod : methods) {
-			AliasAttribute aliasAttribute = aliasAttrMethod.getAnnotation(AliasAttribute.class);
-			if (aliasAttribute == null) {
+			AliasFor aliasFor = aliasAttrMethod.getAnnotation(AliasFor.class);
+			if (aliasFor == null) {
 				continue;
 			}
 
-			String[] aliasedValues = getAliasedValue(compositeMatcher, aliasAttrMethod);
+			String[] aliasValue = getAliasValue(compositeMatcher, aliasAttrMethod);
 
-			Map<String, String[]> aliasedAttributes =
-					createAliasedAttributesIfAbsent(aliasAttributes, aliasAttribute);
-			aliasedAttributes.put(aliasAttribute.attributeFor(), aliasedValues);
+			aliasAttributesMapping.add(aliasFor, aliasValue);
 		}
-		return aliasAttributes;
+		return aliasAttributesMapping;
 	}
 
-	private String[] getAliasedValue(Annotation compositeMatcher, Method aliasedPropMethod) {
+	private String[] getAliasValue(Annotation compositeMatcher, Method aliasedPropMethod) {
 		try {
 			Object value = aliasedPropMethod.invoke(compositeMatcher);
 			if (value instanceof String) {
@@ -185,12 +176,6 @@ public abstract class AbstractSelector implements Selector {
 		} catch (IllegalAccessException | InvocationTargetException | NullPointerException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private Map<String, String[]> createAliasedAttributesIfAbsent(Map<Class<? extends Annotation>,
-			Map<String, String[]>> aliasAttributes, AliasAttribute aliasAttribute) {
-		Class<? extends Annotation> aliasedAnnotation = aliasAttribute.annotationFor();
-		return aliasAttributes.computeIfAbsent(aliasedAnnotation, (a) -> new HashMap<>());
 	}
 
 	private void readDefinitionFromMatcher(Annotation annotation,

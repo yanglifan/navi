@@ -1,5 +1,6 @@
 package com.github.navi.core;
 
+import com.github.navi.core.alias.AliasFor;
 import com.github.navi.core.matcher.EqualMatcher;
 import com.github.navi.core.matcher.VersionMatcher;
 import org.junit.Before;
@@ -65,16 +66,32 @@ public class AliasTest {
 		assertThat(wrongHandler).isNull();
 	}
 
+	@Test
+	public void labeled_alias() {
+		// Given
+		Map<String, String> request = new HashMap<>();
+		request.put("name", "stark");
+		request.put("department", "avengers");
+
+		selector.registerCandidate(Handler.class, new LabeledAliasHandler());
+
+		// When
+		Handler handler = selector.select(request, Handler.class);
+
+		// Then
+		assertThat(handler).isInstanceOf(LabeledAliasHandler.class);
+	}
+
 	@SuppressWarnings("unused")
 	@Retention(RetentionPolicy.RUNTIME)
 	@EqualMatcher(propertyPath = "name")
 	@VersionMatcher(propertyPath = "clientVersion")
 	@CompositeMatcherType
 	@interface AliasAll {
-		@AliasAttribute(annotationFor = EqualMatcher.class, attributeFor = "expectValue")
+		@AliasFor(annotationFor = EqualMatcher.class, attributeFor = "expectValue")
 		String name();
 
-		@AliasAttribute(annotationFor = VersionMatcher.class, attributeFor = "versionRange")
+		@AliasFor(annotationFor = VersionMatcher.class, attributeFor = "versionRange")
 		String clientVersionRange();
 	}
 
@@ -84,8 +101,21 @@ public class AliasTest {
 	@VersionMatcher(propertyPath = "clientVersion")
 	@CompositeMatcherType
 	@interface AliasPart {
-		@AliasAttribute(annotationFor = VersionMatcher.class, attributeFor = "versionRange")
+		@AliasFor(annotationFor = VersionMatcher.class, attributeFor = "versionRange")
 		String clientVersionRange();
+	}
+
+	@SuppressWarnings("unused")
+	@Retention(RetentionPolicy.RUNTIME)
+	@EqualMatcher(propertyPath = "name", aliasLabel = "name")
+	@EqualMatcher(propertyPath = "department", aliasLabel = "department")
+	@CompositeMatcherType
+	@interface LabeledAlias {
+		@AliasFor(annotationFor = EqualMatcher.class, attributeFor = "expectValue", label = "name")
+		String name();
+
+		@AliasFor(annotationFor = EqualMatcher.class, attributeFor = "expectValue", label = "department")
+		String department();
 	}
 
 	@AliasAll(name = "hulk", clientVersionRange = "[1.0.0,2.0.0)")
@@ -95,4 +125,9 @@ public class AliasTest {
 	@AliasPart(clientVersionRange = "[0.1.0,0.2.0)")
 	private class AliasPartHandler implements Handler {
 	}
+
+	@LabeledAlias(name = "stark", department = "avengers")
+	private class LabeledAliasHandler implements Handler {
+	}
+
 }

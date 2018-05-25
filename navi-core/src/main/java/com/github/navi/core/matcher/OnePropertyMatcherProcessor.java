@@ -10,7 +10,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Yang Lifan
@@ -57,16 +56,12 @@ public abstract class OnePropertyMatcherProcessor<A extends Annotation>
 	}
 
 	private String[] getExpectValues(MatcherDefinition<A> matcherDefinition) {
-		String[] aliasedValues = getAliasedValue(matcherDefinition.getAliasedAttributes());
+		String[] aliasedValues = matcherDefinition.getAliasAttribute(aliasName());
 		if (aliasedValues == null) {
 			return getMatcherValue(matcherDefinition.getMatcher());
 		} else {
 			return aliasedValues;
 		}
-	}
-
-	private String[] getAliasedValue(Map<String, String[]> aliasedAttributes) {
-		return aliasedAttributes.get(aliasName());
 	}
 
 	protected abstract String getPropertyPath(A matcherAnnotation);

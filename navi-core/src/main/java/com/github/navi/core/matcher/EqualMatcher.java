@@ -24,6 +24,8 @@ public @interface EqualMatcher {
 
 	String[] expectValue() default "";
 
+	String aliasLabel() default "";
+
 	class Processor extends OnePropertyMatcherProcessor<EqualMatcher> {
 
 		@Override
