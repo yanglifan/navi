@@ -131,7 +131,9 @@ public abstract class AbstractSelector implements Selector {
 
 		readMatcherDefinitions(annotation, matcherDefinitions);
 
-		mergeAliasAttributes(matcherDefinitions, readAliasedAttributes(annotation));
+		AliasAttributesMapping aliasAttributesMapping = readAliasedAttributes(annotation);
+
+		mergeAliasAttributes(matcherDefinitions, aliasAttributesMapping);
 	}
 
 	private boolean notCompositeMatcher(Annotation annotation) {
