@@ -1,6 +1,7 @@
 package com.github.navi.core;
 
-import com.github.navi.core.alias.CompositeAliasAttributes;
+import com.github.navi.core.alias.AliasFor;
+import com.github.navi.core.alias.AliasAttributesMapping;
 import com.github.navi.core.exception.InvalidMatcherException;
 import com.github.navi.core.exception.SelectStrategyCreationException;
 import com.github.navi.core.strategy.ScoreSelectStrategy;
@@ -138,14 +139,14 @@ public abstract class AbstractSelector implements Selector {
 	}
 
 	private void mergeAliasAttributes(List<MatcherDefinition<?>> matcherDefinitions,
-			CompositeAliasAttributes compositeAliasAttributes) {
+			AliasAttributesMapping aliasAttributesMapping) {
 		for (MatcherDefinition<?> matcherDefinition : matcherDefinitions) {
-			compositeAliasAttributes.mergeInto(matcherDefinition);
+			aliasAttributesMapping.mergeInto(matcherDefinition);
 		}
 	}
 
-	private CompositeAliasAttributes readAliasedAttributes(Annotation compositeMatcher) {
-		CompositeAliasAttributes compositeAliasAttributes = new CompositeAliasAttributes();
+	private AliasAttributesMapping readAliasedAttributes(Annotation compositeMatcher) {
+		AliasAttributesMapping aliasAttributesMapping = new AliasAttributesMapping();
 		Method[] methods = compositeMatcher.annotationType().getMethods();
 		for (Method aliasAttrMethod : methods) {
 			AliasFor aliasFor = aliasAttrMethod.getAnnotation(AliasFor.class);
@@ -155,9 +156,9 @@ public abstract class AbstractSelector implements Selector {
 
 			String[] aliasValue = getAliasValue(compositeMatcher, aliasAttrMethod);
 
-			compositeAliasAttributes.add(aliasFor, aliasValue);
+			aliasAttributesMapping.add(aliasFor, aliasValue);
 		}
-		return compositeAliasAttributes;
+		return aliasAttributesMapping;
 	}
 
 	private String[] getAliasValue(Annotation compositeMatcher, Method aliasedPropMethod) {

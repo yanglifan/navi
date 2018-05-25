@@ -1,6 +1,6 @@
 package com.github.navi.core;
 
-import com.github.navi.core.alias.AliasAttributes;
+import com.github.navi.core.alias.MatcherAliasAttributesKey;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -20,12 +20,16 @@ public class MatcherDefinition<A extends Annotation> {
 
 	private A matcher;
 	private String aliasLabel;
-	private AliasAttributes aliasAttributes;
-	private Map<String, String[]> aliasAttributes2;
+	private Map<String, String[]> aliasAttributes;
 
 	MatcherDefinition(A matcher) {
 		this.matcher = matcher;
 		this.aliasLabel = getAliasLabel(matcher);
+	}
+
+	public MatcherAliasAttributesKey key() {
+		Class<? extends Annotation> matcherType = matcher.annotationType();
+		return new MatcherAliasAttributesKey(matcherType, aliasLabel);
 	}
 
 	public String[] getAliasAttribute(String aliasAttributeName) {
@@ -33,15 +37,11 @@ public class MatcherDefinition<A extends Annotation> {
 			return null;
 		}
 
-		return aliasAttributes.getValues().get(aliasAttributeName);
+		return aliasAttributes.get(aliasAttributeName);
 	}
 
-	public void setAliasAttributes(AliasAttributes aliasAttributes) {
+	public void setAliasAttributes(Map<String, String[]> aliasAttributes) {
 		this.aliasAttributes = aliasAttributes;
-	}
-
-	public String getAliasLabel() {
-		return aliasLabel;
 	}
 
 	private String getAliasLabel(A matcher) {

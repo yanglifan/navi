@@ -1,5 +1,6 @@
 package com.github.navi.core;
 
+import com.github.navi.core.alias.AliasFor;
 import com.github.navi.core.matcher.EqualMatcher;
 
 import java.lang.annotation.ElementType;

@@ -1,4 +1,4 @@
-package com.github.navi.core;
+package com.github.navi.core.alias;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;

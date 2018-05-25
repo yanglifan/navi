@@ -1,6 +1,6 @@
 package com.github.navi.core.matcher;
 
-import com.github.navi.core.AliasFor;
+import com.github.navi.core.alias.AliasFor;
 import com.github.navi.core.CompositeMatcherType;
 import com.github.navi.core.Handler;
 import com.github.navi.core.SimpleSelector;
