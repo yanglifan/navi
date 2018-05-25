@@ -107,23 +107,27 @@ public @interface VersionMatcher {
 		}
 
 		private boolean isContentHigherBound(Version comparedVersion) {
-			boolean isContentHigherBound;
-			if (isOpenHigherBound) {
-				isContentHigherBound = higherVersion.compareTo(comparedVersion) > 0;
-			} else {
-				isContentHigherBound = higherVersion.compareTo(comparedVersion) >= 0;
+			if (higherVersion.isAny) {
+				return true;
 			}
-			return isContentHigherBound;
+
+			if (isOpenHigherBound) {
+				return higherVersion.compareTo(comparedVersion) > 0;
+			} else {
+				return higherVersion.compareTo(comparedVersion) >= 0;
+			}
 		}
 
 		private boolean isContentLowerBound(Version comparedVersion) {
-			boolean isContentLowerBound;
-			if (isOpenLowerBound) {
-				isContentLowerBound = lowerBound.compareTo(comparedVersion) < 0;
-			} else {
-				isContentLowerBound = lowerBound.compareTo(comparedVersion) <= 0;
+			if (lowerBound.isAny) {
+				return true;
 			}
-			return isContentLowerBound;
+
+			if (isOpenLowerBound) {
+				return lowerBound.compareTo(comparedVersion) < 0;
+			} else {
+				return lowerBound.compareTo(comparedVersion) <= 0;
+			}
 		}
 	}
 

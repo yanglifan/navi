@@ -53,6 +53,31 @@ public class VersionMatcherTest extends BaseMatcherTest {
 	}
 
 	@Test
+	public void upper_bound_is_all_version2() {
+		// Given
+		Map<String, String> v9_0_11_Request = new HashMap<>();
+		v9_0_11_Request.put("version", "9.0.11");
+
+		Map<String, String> v9_1_0_Request = new HashMap<>();
+		v9_1_0_Request.put("version", "9.1.0");
+
+		Map<String, String> v9_1_20_Request = new HashMap<>();
+		v9_1_20_Request.put("version", "9.1.20");
+
+		registerHandler(new UpperAll2Handler());
+
+		// When
+//		Handler v9_0_11_Result = selector.select(v9_0_11_Request, Handler.class);
+		Handler v9_1_0_Result = selector.select(v9_1_0_Request, Handler.class);
+		Handler v9_1_20_Result = selector.select(v9_1_20_Request, Handler.class);
+
+		// Then
+//		assertThat(v9_0_11_Result).isNull();
+		assertThat(v9_1_0_Result).isInstanceOf(UpperAll2Handler.class);
+		assertThat(v9_1_20_Result).isInstanceOf(UpperAll2Handler.class);
+	}
+
+	@Test
 	public void lower_bound_is_all_version() {
 		// Given
 		Map<String, String> v9_0_11_Request = new HashMap<>();
@@ -95,6 +120,10 @@ public class VersionMatcherTest extends BaseMatcherTest {
 
 	@VersionMatcher(versionRange = "[9.1.0,*]")
 	private class UpperAllHandler implements Handler {
+	}
+
+	@VersionMatcher(versionRange = "[9.1.0,*)")
+	private class UpperAll2Handler implements Handler {
 	}
 
 	@VersionMatcher(versionRange = "[1.0.0,2.0.0)")
