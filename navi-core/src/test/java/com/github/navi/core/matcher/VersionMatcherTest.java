@@ -78,9 +78,23 @@ public class VersionMatcherTest extends BaseMatcherTest {
 		assertThat(v9_1_20_Result).isInstanceOf(UpperAllHandler.class);
 	}
 
+	@Test
+	public void version_range_empty() {
+		// Given
+		Map<String, String> request = new HashMap<>();
+		request.put("version", "1.0.0");
+
+		registerHandler(new EmptyVersionRangeHandler());
+
+		// When
+		Handler handler = selector.select(request, Handler.class);
+
+		// Then
+		assertThat(handler).isNull();
+	}
+
 	@VersionMatcher(versionRange = "[9.1.0,*]")
 	private class UpperAllHandler implements Handler {
-
 	}
 
 	@VersionMatcher(versionRange = "[1.0.0,2.0.0)")
@@ -89,6 +103,9 @@ public class VersionMatcherTest extends BaseMatcherTest {
 
 	@VersionMatcher(versionRange = "[*,9.1.0)")
 	private class LowerAllHandler implements Handler {
+	}
 
+	@VersionMatcher
+	private class EmptyVersionRangeHandler implements Handler {
 	}
 }

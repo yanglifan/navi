@@ -12,6 +12,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 1. If the version range is empty and the version from the request is not empty, then the result
+ * will be {@link MatchResult#REJECT}.
+ *
  * @author Yang Lifan
  */
 @Target(ElementType.TYPE)
@@ -35,16 +38,26 @@ public @interface VersionMatcher {
 		@Override
 		protected MatchResult doProcess(Object request, VersionMatcher matcher,
 				String[] expectValues) {
-			String version = request.toString();
-			if (StringUtils.isEmpty(version) || ALL_VERSIONS.equals(version)) {
+			String versionValue = request.toString();
+			String versionRangeValue = expectValues[0];
+
+			if (emptyOrAll(versionValue)) {
 				return MatchResult.NEUTRAL;
 			}
 
-			VersionRange versionRange = VersionRange.fromString(expectValues[0]);
+			if (StringUtils.isEmpty(versionRangeValue)) {
+				return MatchResult.REJECT;
+			}
 
-			boolean within = versionRange.within(version);
+			VersionRange versionRange = VersionRange.fromString(versionRangeValue);
+
+			boolean within = versionRange.within(versionValue);
 
 			return within ? MatchResult.ACCEPT : MatchResult.REJECT;
+		}
+
+		private boolean emptyOrAll(String version) {
+			return StringUtils.isEmpty(version) || ALL_VERSIONS.equals(version);
 		}
 
 		@Override
