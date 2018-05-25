@@ -51,8 +51,8 @@ public class CompositeMatcherTest {
 		request2.put("version", "2.0.0");
 
 		// When
-		Handler androidV1Handler = selector.select(Handler.class, request1);
-		Handler androidV2Handler = selector.select(Handler.class, request2);
+		Handler androidV1Handler = selector.select(request1, Handler.class);
+		Handler androidV2Handler = selector.select(request2, Handler.class);
 
 		// Then
 		assertThat(androidV1Handler).isInstanceOf(AndroidV1Handler.class);

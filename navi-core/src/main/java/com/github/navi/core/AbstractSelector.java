@@ -31,12 +31,12 @@ public abstract class AbstractSelector implements Selector {
 		this.defaultSelectStrategyClass = defaultSelectStrategyClass;
 	}
 
-	public <T> T select(Class<T> candidateType, Object request) {
-		return this.select(candidateType, request, createSelectStrategy());
+	public <T> T select(Object request, Class<T> candidateType) {
+		return this.select(request, candidateType, createSelectStrategy());
 	}
 
 	@Override
-	public <T> T select(Class<T> candidateType, Object request, SelectStrategy<T> selectStrategy) {
+	public <T> T select(Object request, Class<T> candidateType, SelectStrategy<T> selectStrategy) {
 		Iterable<T> candidates = findCandidatesByType(candidateType);
 
 		for (T candidate : candidates) {

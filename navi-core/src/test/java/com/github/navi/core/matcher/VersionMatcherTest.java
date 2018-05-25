@@ -21,7 +21,7 @@ public class VersionMatcherTest extends BaseMatcherTest {
 		request.put("version", "1.5.0");
 
 		// When
-		Handler handler = selector.select(Handler.class, request);
+		Handler handler = selector.select(request, Handler.class);
 
 		// Then
 		assertThat(handler).isInstanceOf(SimpleVersionHandler.class);
@@ -42,9 +42,9 @@ public class VersionMatcherTest extends BaseMatcherTest {
 		registerHandler(new UpperAllHandler());
 
 		// When
-		Handler v9_0_11_Result = selector.select(Handler.class, v9_0_11_Request);
-		Handler v9_1_0_Result = selector.select(Handler.class, v9_1_0_Request);
-		Handler v9_1_20_Result = selector.select(Handler.class, v9_1_20_Request);
+		Handler v9_0_11_Result = selector.select(v9_0_11_Request, Handler.class);
+		Handler v9_1_0_Result = selector.select(v9_1_0_Request, Handler.class);
+		Handler v9_1_20_Result = selector.select(v9_1_20_Request, Handler.class);
 
 		// Then
 		assertThat(v9_0_11_Result).isNull();
@@ -68,9 +68,9 @@ public class VersionMatcherTest extends BaseMatcherTest {
 		registerHandler(new UpperAllHandler());
 
 		// When
-		Handler v9_0_11_Result = selector.select(Handler.class, v9_0_11_Request);
-		Handler v9_1_0_Result = selector.select(Handler.class, v9_1_0_Request);
-		Handler v9_1_20_Result = selector.select(Handler.class, v9_1_20_Request);
+		Handler v9_0_11_Result = selector.select(v9_0_11_Request, Handler.class);
+		Handler v9_1_0_Result = selector.select(v9_1_0_Request, Handler.class);
+		Handler v9_1_20_Result = selector.select(v9_1_20_Request, Handler.class);
 
 		// Then
 		assertThat(v9_0_11_Result).isInstanceOf(LowerAllHandler.class);
@@ -87,7 +87,7 @@ public class VersionMatcherTest extends BaseMatcherTest {
 		registerHandler(new EmptyVersionRangeHandler());
 
 		// When
-		Handler handler = selector.select(Handler.class, request);
+		Handler handler = selector.select(request, Handler.class);
 
 		// Then
 		assertThat(handler).isNull();
