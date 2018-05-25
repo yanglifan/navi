@@ -42,18 +42,18 @@ public @interface VersionMatcher {
 			String versionRangeValue = expectValues[0];
 
 			if (emptyOrAll(versionValue)) {
-				return MatchResult.NEUTRAL;
+				return MatchResult.neutral();
 			}
 
 			if (StringUtils.isEmpty(versionRangeValue)) {
-				return MatchResult.REJECT;
+				return MatchResult.reject();
 			}
 
 			VersionRange versionRange = VersionRange.fromString(versionRangeValue);
 
 			boolean within = versionRange.within(versionValue);
 
-			return within ? MatchResult.ACCEPT : MatchResult.REJECT;
+			return within ? MatchResult.accept() : MatchResult.reject();
 		}
 
 		private boolean emptyOrAll(String version) {

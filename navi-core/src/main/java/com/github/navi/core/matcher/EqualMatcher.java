@@ -33,7 +33,7 @@ public @interface EqualMatcher {
 				String[] expectValues) {
 			List<String> expectValueList = Arrays.asList(expectValues);
 			boolean isContains = expectValueList.contains(request.toString());
-			return isContains ? MatchResult.ACCEPT : MatchResult.REJECT;
+			return isContains ? MatchResult.accept() : MatchResult.reject();
 		}
 
 		@Override

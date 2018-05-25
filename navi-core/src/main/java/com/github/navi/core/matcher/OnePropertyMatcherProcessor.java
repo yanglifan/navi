@@ -29,7 +29,7 @@ public abstract class OnePropertyMatcherProcessor<A extends Annotation>
 		try {
 			valueFromRequest = getValueFromRequest(properties, valueFromRequest);
 		} catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-			return MatchResult.REJECT;
+			return MatchResult.reject(e);
 		}
 
 		String[] expectValues = getExpectValues(matcherDefinition);

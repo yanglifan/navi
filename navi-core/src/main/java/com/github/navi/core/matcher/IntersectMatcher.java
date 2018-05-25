@@ -48,7 +48,7 @@ public @interface IntersectMatcher {
 				isIntersected = false;
 			}
 
-			return isIntersected ? MatchResult.ACCEPT : MatchResult.REJECT;
+			return isIntersected ? MatchResult.accept() : MatchResult.reject();
 		}
 
 		@Override

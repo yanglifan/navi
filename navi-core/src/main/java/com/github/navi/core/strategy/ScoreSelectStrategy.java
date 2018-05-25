@@ -15,7 +15,7 @@ public class ScoreSelectStrategy<T> implements SelectStrategy<T> {
 	public void addMatchResult(MatchResult matchResult) {
 		currentResult = new ScoreMatchResult(matchResult);
 
-		switch (currentResult.matchResult) {
+		switch (currentResult.matchResult.getType()) {
 			case ACCEPT:
 				currentResult.score++;
 				break;

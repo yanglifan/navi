@@ -62,7 +62,7 @@ public abstract class AbstractSelector implements Selector {
 				continue;
 			}
 
-			if (matchResult == MatchResult.REJECT) {
+			if (matchResult.getType() == MatchResult.MatchType.REJECT) {
 				return null;
 			}
 
