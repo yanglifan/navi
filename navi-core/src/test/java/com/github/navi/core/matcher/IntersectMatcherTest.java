@@ -1,9 +1,9 @@
 package com.github.navi.core.matcher;
 
-import com.github.navi.core.alias.AliasFor;
 import com.github.navi.core.CompositeMatcherType;
 import com.github.navi.core.Handler;
 import com.github.navi.core.SimpleSelector;
+import com.github.navi.core.alias.AliasFor;
 import org.junit.Before;
 import org.junit.Test;
 

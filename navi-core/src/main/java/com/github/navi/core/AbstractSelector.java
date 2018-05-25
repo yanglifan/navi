@@ -1,7 +1,7 @@
 package com.github.navi.core;
 
-import com.github.navi.core.alias.AliasFor;
 import com.github.navi.core.alias.AliasAttributesMapping;
+import com.github.navi.core.alias.AliasFor;
 import com.github.navi.core.exception.InvalidMatcherException;
 import com.github.navi.core.exception.SelectStrategyCreationException;
 import com.github.navi.core.strategy.ScoreSelectStrategy;
