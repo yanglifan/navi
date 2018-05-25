@@ -33,7 +33,7 @@ public class IntersectMatcherTest {
 		selector.registerCandidate(Handler.class, new IntersectHandler());
 
 		// When
-		Handler handler = selector.select(request, Handler.class);
+		Handler handler = selector.select(Handler.class, request);
 
 		// Then
 		assertThat(handler).isInstanceOf(IntersectHandler.class);
@@ -48,7 +48,7 @@ public class IntersectMatcherTest {
 		selector.registerCandidate(Handler.class, new IntersectHandler());
 
 		// When
-		Handler handler = selector.select(request, Handler.class);
+		Handler handler = selector.select(Handler.class, request);
 
 		// Then
 		assertThat(handler).isInstanceOf(IntersectHandler.class);
@@ -63,7 +63,7 @@ public class IntersectMatcherTest {
 		selector.registerCandidate(Handler.class, new AliasIntersectHandler());
 
 		// When
-		Handler handler = selector.select(request, Handler.class);
+		Handler handler = selector.select(Handler.class, request);
 
 		// Then
 		assertThat(handler).isInstanceOf(AliasIntersectHandler.class);

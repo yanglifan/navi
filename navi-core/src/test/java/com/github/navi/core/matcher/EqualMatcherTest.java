@@ -33,7 +33,7 @@ public class EqualMatcherTest {
 		selector.registerCandidate(Handler.class, new SimpleEqualHandler());
 
 		// When
-		Handler handler = selector.select(request, Handler.class);
+		Handler handler = selector.select(Handler.class, request);
 
 		// Then
 		assertThat(handler).isInstanceOf(SimpleEqualHandler.class);
@@ -53,8 +53,8 @@ public class EqualMatcherTest {
 		selector.registerCandidate(Handler.class, new MichaelJordan());
 
 		// When
-		Handler h1 = selector.select(mj1, Handler.class);
-		Handler h2 = selector.select(mj2, Handler.class);
+		Handler h1 = selector.select(Handler.class, mj1);
+		Handler h2 = selector.select(Handler.class, mj2);
 
 		// Then
 		assertThat(h1).isInstanceOf(MichaelJordan.class);

@@ -37,8 +37,8 @@ public class AliasTest {
 		wrongReq.put("clientVersion", "1.5.0");
 
 		// When
-		Handler correctHandler = selector.select(correctReq, Handler.class);
-		Handler wrongHandler = selector.select(wrongReq, Handler.class);
+		Handler correctHandler = selector.select(Handler.class, correctReq);
+		Handler wrongHandler = selector.select(Handler.class, wrongReq);
 
 		// Then
 		assertThat(correctHandler).isInstanceOf(AliasAllHandler.class);
@@ -58,8 +58,8 @@ public class AliasTest {
 		wrongReq.put("clientVersion", "0.1.0");
 
 		// When
-		Handler correctHandler = selector.select(correctReq, Handler.class);
-		Handler wrongHandler = selector.select(wrongReq, Handler.class);
+		Handler correctHandler = selector.select(Handler.class, correctReq);
+		Handler wrongHandler = selector.select(Handler.class, wrongReq);
 
 		// Then
 		assertThat(correctHandler).isInstanceOf(AliasPartHandler.class);
@@ -76,7 +76,7 @@ public class AliasTest {
 		selector.registerCandidate(Handler.class, new LabeledAliasHandler());
 
 		// When
-		Handler handler = selector.select(request, Handler.class);
+		Handler handler = selector.select(Handler.class, request);
 
 		// Then
 		assertThat(handler).isInstanceOf(LabeledAliasHandler.class);

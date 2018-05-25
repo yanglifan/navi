@@ -27,7 +27,7 @@ public class SpringBasedSelectorTest {
 	public void simple() {
 		MyRequest request = new MyRequest();
 		request.username = "bar";
-		Handler handler = selector.select(request, Handler.class);
+		Handler handler = selector.select(Handler.class, request);
 		assertThat(handler).isInstanceOf(TestConfiguration.BarHandler.class);
 	}
 
@@ -43,8 +43,8 @@ public class SpringBasedSelectorTest {
 		v920AndroidRequest.setClientVersion("9.2.0");
 
 		// When
-		CouponHandler androidV900CouponHandler = selector.select(v9010AndroidRequest, CouponHandler.class);
-		CouponHandler androidV910CouponHandler = selector.select(v920AndroidRequest, CouponHandler.class);
+		CouponHandler androidV900CouponHandler = selector.select(CouponHandler.class, v9010AndroidRequest);
+		CouponHandler androidV910CouponHandler = selector.select(CouponHandler.class, v920AndroidRequest);
 
 		// Then
 		assertThat(androidV900CouponHandler).isInstanceOf(AndroidV900CouponHandler.class);

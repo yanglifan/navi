@@ -27,13 +27,13 @@ public class PerfTests {
 
 		Map<String, String> req = new HashMap<>();
 		req.put("version", "1.0.0");
-		simpleSelector.select(req, TestHandler.class);
+		simpleSelector.select(TestHandler.class, req);
 
 		String baseVersion = "1.0.";
 		long start = System.nanoTime();
 		for (int i = 0; i < TEST_COUNT; i++) {
 			req.put("version", baseVersion + i);
-			simpleSelector.select(req, TestHandler.class);
+			simpleSelector.select(TestHandler.class, req);
 		}
 
 		long total = System.nanoTime() - start;
@@ -49,11 +49,11 @@ public class PerfTests {
 
 		Map<String, String> req = new HashMap<>();
 		req.put("text", "hello");
-		simpleSelector.select(req, TestHandler.class);
+		simpleSelector.select(TestHandler.class, req);
 
 		long start = System.nanoTime();
 		for (int i = 0; i < TEST_COUNT; i++) {
-			simpleSelector.select(req, TestHandler.class);
+			simpleSelector.select(TestHandler.class, req);
 		}
 
 		long total = System.nanoTime() - start;

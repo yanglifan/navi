@@ -23,7 +23,7 @@ public class SimpleSelectorTest {
 		simpleSelector.registerCandidates(Handler.class, handlers);
 
 		// When
-		Handler winner = simpleSelector.select(new Object(), Handler.class);
+		Handler winner = simpleSelector.select(Handler.class, new Object());
 
 		// Then
 		assertThat(winner).isNull();
@@ -42,7 +42,7 @@ public class SimpleSelectorTest {
 		req.put("version", "1.0.0");
 
 		// When
-		Handler winner = simpleSelector.select(req, Handler.class);
+		Handler winner = simpleSelector.select(Handler.class, req);
 
 		// Then
 		assertThat(winner).isNull();
@@ -61,7 +61,7 @@ public class SimpleSelectorTest {
 		req.put("version", "1.0.0");
 
 		// When
-		Handler winner = simpleSelector.select(req, Handler.class, new FirstMatchSelectStrategy<>());
+		Handler winner = simpleSelector.select(Handler.class, req, new FirstMatchSelectStrategy<>());
 
 		// Then
 		assertThat(winner).isInstanceOf(StarkHandler.class);
@@ -75,7 +75,7 @@ public class SimpleSelectorTest {
 		SimpleSelector selector = new SimpleSelector();
 		selector.registerCandidate(Handler.class, new WithAliasPropHandler());
 
-		Handler handler = selector.select(request, Handler.class);
+		Handler handler = selector.select(Handler.class, request);
 
 		assertThat(handler).isInstanceOf(WithAliasPropHandler.class);
 	}
