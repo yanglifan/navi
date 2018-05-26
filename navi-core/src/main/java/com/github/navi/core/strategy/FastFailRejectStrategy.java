@@ -9,7 +9,7 @@ import com.github.navi.core.exception.MatchRejectException;
  *
  * @author Yang Lifan
  */
-public class ThrowRejectStrategy implements RejectStrategy {
+public class FastFailRejectStrategy implements RejectStrategy {
 	@Override
 	public <T> void reject(T candidate, MatchResult rejectResult) {
 		if (rejectResult.getRejectException() != null) {
