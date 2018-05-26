@@ -1,4 +1,4 @@
-package com.github.navi.core.matcher;
+package com.github.navi.core;
 
 import com.github.navi.core.Handler;
 import com.github.navi.core.SimpleSelector;
@@ -7,7 +7,7 @@ import org.junit.Before;
 /**
  * @author Yang Lifan
  */
-public abstract class BaseMatcherTest {
+public abstract class BaseTest {
 	protected SimpleSelector selector;
 
 	@Before

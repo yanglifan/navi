@@ -11,7 +11,7 @@ import com.github.navi.core.exception.MatchRejectException;
  */
 public class ThrowRejectStrategy implements RejectStrategy {
 	@Override
-	public void reject(MatchResult rejectResult) {
+	public <T> void reject(T candidate, MatchResult rejectResult) {
 		if (rejectResult.getRejectException() != null) {
 			throw new MatchRejectException(rejectResult.getRejectException());
 		}

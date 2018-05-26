@@ -10,10 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DefaultRejectStrategy implements RejectStrategy {
 	@Override
-	public void reject(MatchResult rejectResult) {
+	public <T> void reject(T candidate, MatchResult rejectResult) {
 		if (rejectResult.getRejectException() != null) {
 			Exception e = rejectResult.getRejectException();
-			log.warn(e.getMessage(), e);
+			log.warn("{} was rejected by the following exception:",
+					candidate.getClass().getSimpleName(), e);
 		}
 	}
 }

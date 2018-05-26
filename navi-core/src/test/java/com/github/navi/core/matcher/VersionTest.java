@@ -1,5 +1,6 @@
 package com.github.navi.core.matcher;
 
+import com.github.navi.core.BaseTest;
 import com.github.navi.core.Handler;
 import org.junit.Test;
 
@@ -11,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Yang Lifan
  */
-public class VersionMatcherTest extends BaseMatcherTest {
+public class VersionTest extends BaseTest {
 	@Test
 	public void simple_match() {
 		// Given

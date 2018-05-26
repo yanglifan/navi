@@ -66,7 +66,7 @@ public abstract class AbstractSelector implements Selector {
 			}
 
 			if (matchResult.getType() == MatchResult.MatchType.REJECT) {
-				rejectStrategy.reject(matchResult);
+				rejectStrategy.reject(candidate, matchResult);
 				return null;
 			}
 
