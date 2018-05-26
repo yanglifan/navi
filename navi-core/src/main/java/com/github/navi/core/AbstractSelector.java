@@ -4,6 +4,7 @@ import com.github.navi.core.alias.AliasAttributesMapping;
 import com.github.navi.core.alias.AliasFor;
 import com.github.navi.core.exception.InvalidMatcherException;
 import com.github.navi.core.exception.SelectStrategyCreationException;
+import com.github.navi.core.strategy.DefaultRejectStrategy;
 import com.github.navi.core.strategy.ScoreSelectStrategy;
 
 import java.lang.annotation.Annotation;
@@ -22,6 +23,8 @@ import static com.github.navi.core.utils.AnnotationUtils.annotatedBy;
  */
 public abstract class AbstractSelector implements Selector {
 	protected Class<? extends SelectStrategy> defaultSelectStrategyClass;
+
+	private RejectStrategy rejectStrategy = new DefaultRejectStrategy();
 
 	public AbstractSelector() {
 		this(ScoreSelectStrategy.class);
@@ -63,6 +66,7 @@ public abstract class AbstractSelector implements Selector {
 			}
 
 			if (matchResult.getType() == MatchResult.MatchType.REJECT) {
+				rejectStrategy.reject(matchResult);
 				return null;
 			}
 
