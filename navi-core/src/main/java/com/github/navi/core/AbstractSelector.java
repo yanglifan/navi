@@ -23,7 +23,6 @@ import static com.github.navi.core.utils.AnnotationUtils.annotatedBy;
  */
 public abstract class AbstractSelector implements Selector {
 	protected Class<? extends SelectStrategy> defaultSelectStrategyClass;
-
 	private RejectStrategy rejectStrategy = new DefaultRejectStrategy();
 
 	public AbstractSelector() {
@@ -33,6 +32,7 @@ public abstract class AbstractSelector implements Selector {
 	public AbstractSelector(Class<? extends SelectStrategy> defaultSelectStrategyClass) {
 		this.defaultSelectStrategyClass = defaultSelectStrategyClass;
 	}
+
 
 	public <T> T select(Object request, Class<T> candidateType) {
 		return this.select(request, candidateType, createSelectStrategy());
@@ -221,5 +221,9 @@ public abstract class AbstractSelector implements Selector {
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw new SelectStrategyCreationException(e);
 		}
+	}
+
+	public void setRejectStrategy(RejectStrategy rejectStrategy) {
+		this.rejectStrategy = rejectStrategy;
 	}
 }
