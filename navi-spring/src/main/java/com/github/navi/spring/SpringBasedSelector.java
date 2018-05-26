@@ -2,7 +2,7 @@ package com.github.navi.spring;
 
 import com.github.navi.core.AbstractSelector;
 import com.github.navi.core.MatcherProcessor;
-import com.github.navi.core.SelectStrategy;
+import com.github.navi.core.SelectPolicy;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
@@ -31,12 +31,12 @@ public class SpringBasedSelector extends AbstractSelector implements Application
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	protected <T> SelectStrategy<T> createSelectStrategy() {
-		// TODO Check SelectStrategy bean is prototype.
+	protected <T> SelectPolicy<T> createSelectPolicy() {
+		// TODO Check SelectPolicy bean is prototype.
 		try {
-			return applicationContext.getBean(this.defaultSelectStrategyClass);
+			return applicationContext.getBean(this.defaultSelectPolicyClass);
 		} catch (NoSuchBeanDefinitionException e) {
-			return super.createSelectStrategy();
+			return super.createSelectPolicy();
 		}
 	}
 }

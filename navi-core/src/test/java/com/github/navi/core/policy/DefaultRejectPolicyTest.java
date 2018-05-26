@@ -1,4 +1,4 @@
-package com.github.navi.core.strategy;
+package com.github.navi.core.policy;
 
 import com.github.navi.core.BaseTest;
 import com.github.navi.core.Handler;
@@ -9,7 +9,7 @@ import org.junit.contrib.java.lang.system.SystemErrRule;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DefaultRejectStrategyTest extends BaseTest {
+public class DefaultRejectPolicyTest extends BaseTest {
 
 	@Rule
 	public final SystemErrRule systemErrRule = new SystemErrRule().enableLog();

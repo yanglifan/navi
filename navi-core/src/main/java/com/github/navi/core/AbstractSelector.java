@@ -3,9 +3,9 @@ package com.github.navi.core;
 import com.github.navi.core.alias.AliasAttributesMapping;
 import com.github.navi.core.alias.AliasFor;
 import com.github.navi.core.exception.InvalidMatcherException;
-import com.github.navi.core.exception.SelectStrategyCreationException;
-import com.github.navi.core.strategy.DefaultRejectStrategy;
-import com.github.navi.core.strategy.ScoreSelectStrategy;
+import com.github.navi.core.exception.SelectPolicyCreationException;
+import com.github.navi.core.policy.DefaultRejectPolicy;
+import com.github.navi.core.policy.ScoreSelectPolicy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -22,38 +22,38 @@ import static com.github.navi.core.utils.AnnotationUtils.annotatedBy;
  * @author Yang Lifan
  */
 public abstract class AbstractSelector implements Selector {
-	protected Class<? extends SelectStrategy> defaultSelectStrategyClass;
-	private RejectStrategy rejectStrategy = new DefaultRejectStrategy();
+	protected Class<? extends SelectPolicy> defaultSelectPolicyClass;
+	private RejectPolicy rejectPolicy = new DefaultRejectPolicy();
 
 	public AbstractSelector() {
-		this(ScoreSelectStrategy.class);
+		this(ScoreSelectPolicy.class);
 	}
 
-	public AbstractSelector(Class<? extends SelectStrategy> defaultSelectStrategyClass) {
-		this.defaultSelectStrategyClass = defaultSelectStrategyClass;
+	public AbstractSelector(Class<? extends SelectPolicy> defaultSelectPolicyClass) {
+		this.defaultSelectPolicyClass = defaultSelectPolicyClass;
 	}
 
 
 	public <T> T select(Object request, Class<T> candidateType) {
-		return this.select(request, candidateType, createSelectStrategy());
+		return this.select(request, candidateType, createSelectPolicy());
 	}
 
 	@Override
-	public <T> T select(Object request, Class<T> candidateType, SelectStrategy<T> selectStrategy) {
+	public <T> T select(Object request, Class<T> candidateType, SelectPolicy<T> selectPolicy) {
 		Iterable<T> candidates = findCandidatesByType(candidateType);
 
 		for (T candidate : candidates) {
-			T result = doMatch(request, candidate, selectStrategy);
+			T result = doMatch(request, candidate, selectPolicy);
 
 			if (result != null) {
 				return result;
 			}
 		}
 
-		return selectStrategy.getResult();
+		return selectPolicy.getResult();
 	}
 
-	private <T> T doMatch(Object request, T candidate, SelectStrategy<T> selectStrategy) {
+	private <T> T doMatch(Object request, T candidate, SelectPolicy<T> selectPolicy) {
 		List<MatcherDefinition<?>> matcherDefinitions = new ArrayList<>();
 
 		readMatcherDefinitions(candidate, matcherDefinitions);
@@ -66,14 +66,14 @@ public abstract class AbstractSelector implements Selector {
 			}
 
 			if (matchResult.getType() == MatchResult.MatchType.REJECT) {
-				rejectStrategy.reject(candidate, matchResult);
+				rejectPolicy.reject(candidate, matchResult);
 				return null;
 			}
 
-			selectStrategy.addMatchResult(matchResult);
+			selectPolicy.addMatchResult(matchResult);
 		}
 
-		return selectStrategy.addCandidate(candidate);
+		return selectPolicy.addCandidate(candidate);
 	}
 
 	private void readMatcherDefinitions(Object candidate,
@@ -215,15 +215,15 @@ public abstract class AbstractSelector implements Selector {
 	protected abstract <T> Iterable<T> findCandidatesByType(Class<T> beanClass);
 
 	@SuppressWarnings("unchecked")
-	protected <T> SelectStrategy<T> createSelectStrategy() {
+	protected <T> SelectPolicy<T> createSelectPolicy() {
 		try {
-			return defaultSelectStrategyClass.newInstance();
+			return defaultSelectPolicyClass.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
-			throw new SelectStrategyCreationException(e);
+			throw new SelectPolicyCreationException(e);
 		}
 	}
 
-	public void setRejectStrategy(RejectStrategy rejectStrategy) {
-		this.rejectStrategy = rejectStrategy;
+	public void setRejectPolicy(RejectPolicy rejectPolicy) {
+		this.rejectPolicy = rejectPolicy;
 	}
 }

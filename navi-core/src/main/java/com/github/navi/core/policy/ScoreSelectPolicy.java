@@ -1,12 +1,12 @@
-package com.github.navi.core.strategy;
+package com.github.navi.core.policy;
 
 import com.github.navi.core.MatchResult;
-import com.github.navi.core.SelectStrategy;
+import com.github.navi.core.SelectPolicy;
 
 /**
  * @author Yang Lifan
  */
-public class ScoreSelectStrategy<T> implements SelectStrategy<T> {
+public class ScoreSelectPolicy<T> implements SelectPolicy<T> {
 
 	private ScoreMatchResult currentWinner;
 	private ScoreMatchResult currentResult;

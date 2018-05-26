@@ -1,4 +1,4 @@
-package com.github.navi.core.strategy;
+package com.github.navi.core.policy;
 
 import com.github.navi.core.BaseTest;
 import com.github.navi.core.Handler;
@@ -8,14 +8,14 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FastFailRejectStrategyTest extends BaseTest {
+public class FastFailRejectPolicyTest extends BaseTest {
 	@SuppressWarnings("all")
 	@Test
 	public void reject_by_no_such_method() {
 		// Given
 		Object request = new Object();
 		registerHandler(new FailHandler());
-		selector.setRejectStrategy(new FastFailRejectStrategy());
+		selector.setRejectPolicy(new FastFailRejectPolicy());
 
 		// When
 		Exception ex = null;

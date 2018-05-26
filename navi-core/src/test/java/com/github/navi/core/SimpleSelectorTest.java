@@ -2,7 +2,7 @@ package com.github.navi.core;
 
 import com.github.navi.core.matcher.EqualMatcher;
 import com.github.navi.core.matcher.VersionMatcher;
-import com.github.navi.core.strategy.FirstMatchSelectStrategy;
+import com.github.navi.core.policy.FirstMatchSelectPolicy;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -61,7 +61,7 @@ public class SimpleSelectorTest {
 		req.put("version", "1.0.0");
 
 		// When
-		Handler winner = simpleSelector.select(req, Handler.class, new FirstMatchSelectStrategy<>());
+		Handler winner = simpleSelector.select(req, Handler.class, new FirstMatchSelectPolicy<>());
 
 		// Then
 		assertThat(winner).isInstanceOf(StarkHandler.class);

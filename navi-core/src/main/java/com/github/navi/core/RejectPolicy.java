@@ -3,6 +3,6 @@ package com.github.navi.core;
 /**
  * @author Yang Lifan
  */
-public interface RejectStrategy {
+public interface RejectPolicy {
 	<T> void reject(T candidate, MatchResult rejectResult);
 }

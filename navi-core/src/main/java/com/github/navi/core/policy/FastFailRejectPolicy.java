@@ -1,7 +1,7 @@
-package com.github.navi.core.strategy;
+package com.github.navi.core.policy;
 
 import com.github.navi.core.MatchResult;
-import com.github.navi.core.RejectStrategy;
+import com.github.navi.core.RejectPolicy;
 import com.github.navi.core.exception.MatchRejectException;
 
 /**
@@ -9,7 +9,7 @@ import com.github.navi.core.exception.MatchRejectException;
  *
  * @author Yang Lifan
  */
-public class FastFailRejectStrategy implements RejectStrategy {
+public class FastFailRejectPolicy implements RejectPolicy {
 	@Override
 	public <T> void reject(T candidate, MatchResult rejectResult) {
 		if (rejectResult.getRejectException() != null) {
