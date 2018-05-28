@@ -32,7 +32,6 @@ public abstract class AbstractSelector implements Selector {
 		this.defaultSelectPolicyClass = defaultSelectPolicyClass;
 	}
 
-
 	public <T> T select(Object request, Class<T> candidateType) {
 		return this.select(request, candidateType, createSelectPolicy());
 	}
