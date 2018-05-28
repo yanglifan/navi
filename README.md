@@ -2,7 +2,7 @@
 
 [![](https://travis-ci.com/yanglifan/navi.svg?branch=master)](https://travis-ci.com/yanglifan/navi)
 [![codecov](https://codecov.io/gh/yanglifan/navi/branch/master/graph/badge.svg)](https://codecov.io/gh/yanglifan/navi)
-[![][https://img.shields.io/badge/License-Apache%202-blue.svg]][LICENSE]
+[![](https://img.shields.io/badge/License-Apache%202-blue.svg)](LICENSE)
 
 ## Why?
 
