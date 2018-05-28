@@ -32,6 +32,10 @@ public abstract class OnePropertyMatcherProcessor<A extends Annotation>
 			return MatchResult.reject(e);
 		}
 
+		if (valueFromRequest == null) {
+			return MatchResult.reject();
+		}
+
 		String[] expectValues = getExpectValues(matcherDefinition);
 
 		return doProcess(valueFromRequest, matcherDefinition.getMatcher(), expectValues);
