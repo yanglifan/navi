@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.yanglifan.navi.core.utils;
+package com.github.yanglifan.navi.core.util;
 
 import java.lang.annotation.Annotation;
 

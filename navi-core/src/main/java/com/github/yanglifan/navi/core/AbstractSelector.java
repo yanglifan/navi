@@ -22,7 +22,7 @@ import com.github.yanglifan.navi.core.exception.InvalidMatcherException;
 import com.github.yanglifan.navi.core.exception.SelectPolicyCreationException;
 import com.github.yanglifan.navi.core.policy.DefaultRejectPolicy;
 import com.github.yanglifan.navi.core.policy.ScoreSelectPolicy;
-import com.github.yanglifan.navi.core.utils.AnnotationUtils;
+import com.github.yanglifan.navi.core.util.AnnotationUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
