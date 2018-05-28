@@ -40,6 +40,21 @@ public class EqualMatcherTest {
 	}
 
 	@Test
+	public void multi_expect_values() {
+		// Given
+		Map<String, String> request = new HashMap<>();
+		request.put("name", "stark");
+
+		selector.registerCandidate(Handler.class, new MultiEqualHandler());
+
+		// When
+		Handler handler = selector.select(request, Handler.class);
+
+		// Then
+		assertThat(handler).isInstanceOf(MultiEqualHandler.class);
+	}
+
+	@Test
 	public void repeatable() {
 		// Given
 		Map<String, String> mj1 = new HashMap<>();
@@ -63,6 +78,10 @@ public class EqualMatcherTest {
 
 	@EqualMatcher(property = "name", value = "stark")
 	private class SimpleEqualHandler implements Handler {
+	}
+
+	@EqualMatcher(property = "name", value = {"stark", "thor"})
+	private class MultiEqualHandler implements Handler {
 	}
 
 	@EqualMatcher(property = "firstName", value = "michael")
