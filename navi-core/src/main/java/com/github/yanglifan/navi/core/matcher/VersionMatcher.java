@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 
 /**
  * 1. If the version range is empty and the version from the request is not empty, then the result
- * will be {@link MatchResult#REJECT}.
+ * will be {@link com.github.yanglifan.navi.core.MatchResult.MatchType#REJECT}.
  *
  * @author Yang Lifan
  */
@@ -25,14 +25,14 @@ import java.lang.annotation.Target;
 public @interface VersionMatcher {
 	String ALL_VERSIONS = "*";
 
-	String propertyPath() default "version";
+	String property() default "version";
 
-	String versionRange() default "";
+	String range() default "";
 
 	class Processor extends OnePropertyMatcherProcessor<VersionMatcher> {
 		@Override
 		protected String getPropertyPath(VersionMatcher matcherAnnotation) {
-			return matcherAnnotation.propertyPath();
+			return matcherAnnotation.property();
 		}
 
 		@Override
@@ -62,12 +62,12 @@ public @interface VersionMatcher {
 
 		@Override
 		protected String[] getMatcherValue(VersionMatcher matcher) {
-			return new String[]{matcher.versionRange()};
+			return new String[]{matcher.range()};
 		}
 
 		@Override
 		protected String aliasName() {
-			return "versionRange";
+			return "range";
 		}
 	}
 

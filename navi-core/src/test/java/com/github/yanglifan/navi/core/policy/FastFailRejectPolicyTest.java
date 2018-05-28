@@ -30,7 +30,7 @@ public class FastFailRejectPolicyTest extends BaseTest {
 		assertThat(ex.getCause()).isInstanceOf(NoSuchMethodException.class);
 	}
 
-	@EqualMatcher(propertyPath = "name", expectValue = "duncan")
+	@EqualMatcher(property = "name", value = "duncan")
 	private class FailHandler implements Handler {
 	}
 }

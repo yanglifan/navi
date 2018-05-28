@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 /**
  * @author Yang Lifan
  */
-@EqualMatcher(propertyPath = "platform", expectValue = "android")
-@VersionMatcher(propertyPath = "clientVersion", versionRange = "[9.0.0,9.1.0)")
+@EqualMatcher(property = "platform", value = "android")
+@VersionMatcher(property = "clientVersion", range = "[9.0.0,9.1.0)")
 @Component
 public class AndroidV900CouponHandler implements CouponHandler {
 	@Override

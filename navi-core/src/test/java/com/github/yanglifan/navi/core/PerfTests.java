@@ -63,12 +63,12 @@ public class PerfTests {
 	interface TestHandler {
 	}
 
-	@VersionMatcher(versionRange = "[1.0.0,1.1.0)")
+	@VersionMatcher(range = "[1.0.0,1.1.0)")
 	private class V1TestHandler implements TestHandler {
 
 	}
 
-	@EqualMatcher(propertyPath = "text", expectValue = "hello")
+	@EqualMatcher(property = "text", value = "hello")
 	private class HelloTestHandler implements TestHandler {
 
 	}

@@ -21,9 +21,9 @@ import java.util.List;
 @Inherited
 @MatcherType(processor = IntersectMatcher.Processor.class)
 public @interface IntersectMatcher {
-	String propertyPath();
+	String property();
 
-	String[] expectValue() default {};
+	String[] value() default {};
 
 	String separator() default ",";
 
@@ -31,7 +31,7 @@ public @interface IntersectMatcher {
 
 		@Override
 		protected String getPropertyPath(IntersectMatcher matcherAnnotation) {
-			return matcherAnnotation.propertyPath();
+			return matcherAnnotation.property();
 		}
 
 		@Override
@@ -53,12 +53,12 @@ public @interface IntersectMatcher {
 
 		@Override
 		protected String[] getMatcherValue(IntersectMatcher matcher) {
-			return matcher.expectValue();
+			return matcher.value();
 		}
 
 		@Override
 		protected String aliasName() {
-			return "expectValue";
+			return "value";
 		}
 
 		private boolean isStringCollection(Object property) {

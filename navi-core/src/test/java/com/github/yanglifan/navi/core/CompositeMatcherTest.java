@@ -17,8 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@VersionMatcher(versionRange = "[1.0.0,2.0.0)")
-@EqualMatcher(propertyPath = "platform", expectValue = "android")
+@VersionMatcher(range = "[1.0.0,2.0.0)")
+@EqualMatcher(property = "platform", value = "android")
 @CompositeMatcherType
 @interface AndroidV1Matcher {
 

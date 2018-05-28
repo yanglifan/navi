@@ -20,9 +20,9 @@ import java.util.List;
 @Repeatable(EqualMatchers.class)
 @MatcherType(processor = EqualMatcher.Processor.class)
 public @interface EqualMatcher {
-	String propertyPath();
+	String property();
 
-	String[] expectValue() default "";
+	String[] value() default "";
 
 	String aliasLabel() default "";
 
@@ -38,17 +38,17 @@ public @interface EqualMatcher {
 
 		@Override
 		protected String getPropertyPath(EqualMatcher matcherAnnotation) {
-			return matcherAnnotation.propertyPath();
+			return matcherAnnotation.property();
 		}
 
 		@Override
 		protected String[] getMatcherValue(EqualMatcher matcher) {
-			return matcher.expectValue();
+			return matcher.value();
 		}
 
 		@Override
 		protected String aliasName() {
-			return "expectValue";
+			return "value";
 		}
 	}
 }

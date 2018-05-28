@@ -68,12 +68,12 @@ public class VersionTest extends BaseTest {
 		registerHandler(new UpperAll2Handler());
 
 		// When
-//		Handler v9_0_11_Result = selector.select(v9_0_11_Request, Handler.class);
+		Handler v9_0_11_Result = selector.select(v9_0_11_Request, Handler.class);
 		Handler v9_1_0_Result = selector.select(v9_1_0_Request, Handler.class);
 		Handler v9_1_20_Result = selector.select(v9_1_20_Request, Handler.class);
 
 		// Then
-//		assertThat(v9_0_11_Result).isNull();
+		assertThat(v9_0_11_Result).isNull();
 		assertThat(v9_1_0_Result).isInstanceOf(UpperAll2Handler.class);
 		assertThat(v9_1_20_Result).isInstanceOf(UpperAll2Handler.class);
 	}
@@ -119,19 +119,19 @@ public class VersionTest extends BaseTest {
 		assertThat(handler).isNull();
 	}
 
-	@VersionMatcher(versionRange = "[9.1.0,*]")
+	@VersionMatcher(range = "[9.1.0,*]")
 	private class UpperAllHandler implements Handler {
 	}
 
-	@VersionMatcher(versionRange = "[9.1.0,*)")
+	@VersionMatcher(range = "[9.1.0,*)")
 	private class UpperAll2Handler implements Handler {
 	}
 
-	@VersionMatcher(versionRange = "[1.0.0,2.0.0)")
+	@VersionMatcher(range = "[1.0.0,2.0.0)")
 	private class SimpleVersionHandler implements Handler {
 	}
 
-	@VersionMatcher(versionRange = "[*,9.1.0)")
+	@VersionMatcher(range = "[*,9.1.0)")
 	private class LowerAllHandler implements Handler {
 	}
 

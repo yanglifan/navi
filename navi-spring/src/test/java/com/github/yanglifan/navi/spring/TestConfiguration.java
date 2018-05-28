@@ -17,12 +17,12 @@ public class TestConfiguration {
 	}
 
 	@SuppressWarnings("all")
-	@EqualMatcher(propertyPath = "username", expectValue = "foo")
+	@EqualMatcher(property = "username", value = "foo")
 	@Component
 	static class FooHandler implements Handler {
 	}
 
-	@EqualMatcher(propertyPath = "username", expectValue = "bar")
+	@EqualMatcher(property = "username", value = "bar")
 	@Component
 	static class BarHandler implements Handler {
 	}

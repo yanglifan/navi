@@ -84,37 +84,37 @@ public class AliasTest {
 
 	@SuppressWarnings("unused")
 	@Retention(RetentionPolicy.RUNTIME)
-	@EqualMatcher(propertyPath = "name")
-	@VersionMatcher(propertyPath = "clientVersion")
+	@EqualMatcher(property = "name")
+	@VersionMatcher(property = "clientVersion")
 	@CompositeMatcherType
 	@interface AliasAll {
-		@AliasFor(annotationFor = EqualMatcher.class, attributeFor = "expectValue")
+		@AliasFor(annotationFor = EqualMatcher.class, attributeFor = "value")
 		String name();
 
-		@AliasFor(annotationFor = VersionMatcher.class, attributeFor = "versionRange")
+		@AliasFor(annotationFor = VersionMatcher.class, attributeFor = "range")
 		String clientVersionRange();
 	}
 
 	@SuppressWarnings("unused")
 	@Retention(RetentionPolicy.RUNTIME)
-	@EqualMatcher(propertyPath = "name", expectValue = "hulk")
-	@VersionMatcher(propertyPath = "clientVersion")
+	@EqualMatcher(property = "name", value = "hulk")
+	@VersionMatcher(property = "clientVersion")
 	@CompositeMatcherType
 	@interface AliasPart {
-		@AliasFor(annotationFor = VersionMatcher.class, attributeFor = "versionRange")
+		@AliasFor(annotationFor = VersionMatcher.class, attributeFor = "range")
 		String clientVersionRange();
 	}
 
 	@SuppressWarnings("unused")
 	@Retention(RetentionPolicy.RUNTIME)
-	@EqualMatcher(propertyPath = "name", aliasLabel = "name")
-	@EqualMatcher(propertyPath = "department", aliasLabel = "department")
+	@EqualMatcher(property = "name", aliasLabel = "name")
+	@EqualMatcher(property = "department", aliasLabel = "department")
 	@CompositeMatcherType
 	@interface LabeledAlias {
-		@AliasFor(annotationFor = EqualMatcher.class, attributeFor = "expectValue", label = "name")
+		@AliasFor(annotationFor = EqualMatcher.class, attributeFor = "value", label = "name")
 		String name();
 
-		@AliasFor(annotationFor = EqualMatcher.class, attributeFor = "expectValue", label = "department")
+		@AliasFor(annotationFor = EqualMatcher.class, attributeFor = "value", label = "department")
 		String department();
 	}
 

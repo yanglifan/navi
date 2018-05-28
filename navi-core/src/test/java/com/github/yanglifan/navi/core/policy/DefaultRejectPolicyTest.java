@@ -28,8 +28,7 @@ public class DefaultRejectPolicyTest extends BaseTest {
 				.contains("FailHandler was rejected by the following exception:");
 	}
 
-	@EqualMatcher(propertyPath = "name", expectValue = "duncan")
+	@EqualMatcher(property = "name", value = "duncan")
 	private class FailHandler implements Handler {
-
 	}
 }

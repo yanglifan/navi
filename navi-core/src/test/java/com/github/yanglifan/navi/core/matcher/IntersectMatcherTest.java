@@ -71,14 +71,14 @@ public class IntersectMatcherTest {
 
 	@SuppressWarnings("unused")
 	@Retention(RetentionPolicy.RUNTIME)
-	@IntersectMatcher(propertyPath = "name")
+	@IntersectMatcher(property = "name")
 	@CompositeMatcherType
 	public @interface AliasIntersectMatcher {
-		@AliasFor(annotationFor = IntersectMatcher.class, attributeFor = "expectValue")
+		@AliasFor(annotationFor = IntersectMatcher.class, attributeFor = "value")
 		String[] names();
 	}
 
-	@IntersectMatcher(propertyPath = "name", expectValue = {"stark", "rogers"})
+	@IntersectMatcher(property = "name", value = {"stark", "rogers"})
 	private class IntersectHandler implements Handler {
 
 	}

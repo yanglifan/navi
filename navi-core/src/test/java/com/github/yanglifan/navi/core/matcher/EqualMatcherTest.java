@@ -61,12 +61,12 @@ public class EqualMatcherTest {
 		assertThat(h2).isNull();
 	}
 
-	@EqualMatcher(propertyPath = "name", expectValue = "stark")
+	@EqualMatcher(property = "name", value = "stark")
 	private class SimpleEqualHandler implements Handler {
 	}
 
-	@EqualMatcher(propertyPath = "firstName", expectValue = "michael")
-	@EqualMatcher(propertyPath = "lastName", expectValue = "jordan")
+	@EqualMatcher(property = "firstName", value = "michael")
+	@EqualMatcher(property = "lastName", value = "jordan")
 	private class MichaelJordan implements Handler {
 	}
 }

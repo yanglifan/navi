@@ -88,8 +88,8 @@ public class SimpleSelectorTest {
 
 	}
 
-	@EqualMatcher(propertyPath = "username", expectValue = "stark")
-	@VersionMatcher(versionRange = "[1.0.0,2.0.0)")
+	@EqualMatcher(property = "username", value = "stark")
+	@VersionMatcher(range = "[1.0.0,2.0.0)")
 	private class StarkHandler implements Handler {
 
 	}

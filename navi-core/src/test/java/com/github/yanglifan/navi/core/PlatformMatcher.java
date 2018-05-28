@@ -13,9 +13,9 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@EqualMatcher(propertyPath = "platform")
+@EqualMatcher(property = "platform")
 @CompositeMatcherType
 public @interface PlatformMatcher {
-	@AliasFor(annotationFor = EqualMatcher.class, attributeFor = "expectValue")
+	@AliasFor(annotationFor = EqualMatcher.class, attributeFor = "value")
 	String platform();
 }
