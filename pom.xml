@@ -2,11 +2,45 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.yanglifan.navi</groupId>
     <artifactId>navi</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+
+    <name>Navi</name>
+    <description>Navi: Annotation Based Component Selector</description>
+    <url>https://github.com/yanglifan/navi</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/yanglifan/navi/tree/master</url>
+        <connection>scm:git:git//github.com/yanglifan/navi.git</connection>
+        <developerConnection>scm:git:ssh://github.com:yanglifan/navi.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>Yang Lifan</name>
+            <email>yanglifan@gmail.com</email>
+            <organization>Github</organization>
+            <organizationUrl>https://github.com/yanglifan</organizationUrl>
+        </developer>
+    </developers>
+
     <modules>
         <module>navi-core</module>
         <module>navi-spring</module>
