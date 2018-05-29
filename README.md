@@ -2,6 +2,7 @@
 
 [![](https://travis-ci.com/yanglifan/navi.svg?branch=master)](https://travis-ci.com/yanglifan/navi)
 [![codecov](https://codecov.io/gh/yanglifan/navi/branch/master/graph/badge.svg)](https://codecov.io/gh/yanglifan/navi)
+[![](https://maven-badges.herokuapp.com/maven-central/com.github.yanglifan.navi/navi-core/badge.svg)](http://search.maven.org/#search|gav|1|g:"com.github.yanglifan.navi"%20AND%20a:"navi-core")
 [![](https://img.shields.io/badge/License-Apache%202-blue.svg)](LICENSE)
 
 ## Why?
