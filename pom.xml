@@ -28,7 +28,7 @@
     <scm>
         <url>https://github.com/yanglifan/navi/tree/master</url>
         <connection>scm:git:git//github.com/yanglifan/navi.git</connection>
-        <developerConnection>scm:git:ssh://github.com:yanglifan/navi.git</developerConnection>
+        <developerConnection>scm:git:ssh://github.com/yanglifan/navi.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
