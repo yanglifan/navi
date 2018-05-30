@@ -23,8 +23,8 @@ With Navi, developers can implement the complex logic with elegant way.
 ## How?
  
 ```java
-@EqualMatcher(propertyPath = "clientType", expectValue = "android")
-@VersionMatcher(versionRange = "[1.0.0,2.0.0)")
+@EqualMatcher(property = "clientType", value = "android")
+@VersionMatcher(range = "[1.0.0,2.0.0)")
 public class AndroidV1OrderCreateHandler implements OrderCreateHandler {
 
 }
