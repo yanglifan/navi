@@ -30,6 +30,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -38,7 +40,12 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractSelector implements Selector {
 	protected Class<? extends SelectPolicy> defaultSelectPolicyClass;
+
 	private RejectPolicy rejectPolicy = new DefaultRejectPolicy();
+
+	private boolean cacheMatcherDefinitions = true;
+	private ConcurrentMap<Object, List<MatcherDefinition<?>>> matcherDefinitionCache =
+			new ConcurrentHashMap<>();
 
 	public AbstractSelector() {
 		this(ScoreSelectPolicy.class);
@@ -68,9 +75,7 @@ public abstract class AbstractSelector implements Selector {
 	}
 
 	private <T> T doMatch(Object request, T candidate, SelectPolicy<T> selectPolicy) {
-		List<MatcherDefinition<?>> matcherDefinitions = new ArrayList<>();
-
-		readMatcherDefinitions(candidate, matcherDefinitions);
+		List<MatcherDefinition<?>> matcherDefinitions = readMatcherDefinitions(candidate);
 
 		for (MatcherDefinition<?> matcherDefinition : matcherDefinitions) {
 			MatchResult matchResult = doMatch(request, matcherDefinition);
@@ -88,6 +93,21 @@ public abstract class AbstractSelector implements Selector {
 		}
 
 		return selectPolicy.addCandidate(candidate);
+	}
+
+	private List<MatcherDefinition<?>> readMatcherDefinitions(Object candidate) {
+		if (cacheMatcherDefinitions) {
+			return matcherDefinitionCache
+					.computeIfAbsent(candidate, this::doReadMatcherDefinitions);
+		} else {
+			return doReadMatcherDefinitions(candidate);
+		}
+	}
+
+	private List<MatcherDefinition<?>> doReadMatcherDefinitions(Object candidate) {
+		List<MatcherDefinition<?>> definitions = new ArrayList<>();
+		readMatcherDefinitions(candidate, definitions);
+		return definitions;
 	}
 
 	private void readMatcherDefinitions(Object candidate,
@@ -239,5 +259,9 @@ public abstract class AbstractSelector implements Selector {
 
 	public void setRejectPolicy(RejectPolicy rejectPolicy) {
 		this.rejectPolicy = rejectPolicy;
+	}
+
+	public void setCacheMatcherDefinitions(boolean cacheMatcherDefinitions) {
+		this.cacheMatcherDefinitions = cacheMatcherDefinitions;
 	}
 }

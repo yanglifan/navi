@@ -36,40 +36,59 @@ public class PerfTests {
 
 	@Test
 	public void test_version_matcher() {
-		SimpleSelector simpleSelector = new SimpleSelector();
+		doTestVersionMatcher(false);
+	}
+
+	@Test
+	public void test_version_matcher_cached() {
+		doTestVersionMatcher(true);
+	}
+
+	@Test
+	public void test_equals_matcher() {
+		doEqualMatcherTest(false);
+	}
+
+	@Test
+	public void test_equals_matcher_cached() {
+		doEqualMatcherTest(true);
+	}
+
+	private void doTestVersionMatcher(boolean needCache) {
+		SimpleSelector selector = new SimpleSelector();
+		selector.setCacheMatcherDefinitions(needCache);
+
 		Set<TestHandler> handlers = new HashSet<>();
 		handlers.add(new V1TestHandler());
-		simpleSelector.registerCandidates(TestHandler.class, handlers);
+		selector.registerCandidates(TestHandler.class, handlers);
 
 		Map<String, String> req = new HashMap<>();
 		req.put("version", "1.0.0");
-		simpleSelector.select(req, TestHandler.class);
+		selector.select(req, TestHandler.class);
 
 		String baseVersion = "1.0.";
 		long start = System.nanoTime();
 		for (int i = 0; i < TEST_COUNT; i++) {
 			req.put("version", baseVersion + i);
-			simpleSelector.select(req, TestHandler.class);
+			selector.select(req, TestHandler.class);
 		}
 
 		long total = System.nanoTime() - start;
 		System.out.println("Per Version Match cost: " + total / TEST_COUNT + "ns");
 	}
 
-	@Test
-	public void test_equals_matcher() {
-		SimpleSelector simpleSelector = new SimpleSelector();
-		Set<TestHandler> handlers = new HashSet<>();
-		handlers.add(new HelloTestHandler());
-		simpleSelector.registerCandidates(TestHandler.class, handlers);
+	private void doEqualMatcherTest(boolean cache) {
+		SimpleSelector selector = new SimpleSelector();
+		selector.setCacheMatcherDefinitions(cache);
+
+		selector.registerCandidate(TestHandler.class, new HelloTestHandler());
 
 		Map<String, String> req = new HashMap<>();
 		req.put("text", "hello");
-		simpleSelector.select(req, TestHandler.class);
 
 		long start = System.nanoTime();
 		for (int i = 0; i < TEST_COUNT; i++) {
-			simpleSelector.select(req, TestHandler.class);
+			selector.select(req, TestHandler.class);
 		}
 
 		long total = System.nanoTime() - start;
@@ -81,12 +100,10 @@ public class PerfTests {
 
 	@VersionMatcher(range = "[1.0.0,1.1.0)")
 	private class V1TestHandler implements TestHandler {
-
 	}
 
 	@EqualMatcher(property = "text", value = "hello")
 	private class HelloTestHandler implements TestHandler {
-
 	}
 }
 
