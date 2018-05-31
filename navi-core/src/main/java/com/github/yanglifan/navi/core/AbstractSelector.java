@@ -157,7 +157,8 @@ public abstract class AbstractSelector implements Selector {
 	}
 
 	private Predicate<Annotation> isMatcher() {
-		return a -> AnnotationUtils.annotatedBy(a, MatcherType.class) || AnnotationUtils.annotatedBy(a, CompositeMatcherType.class)
+		return a -> AnnotationUtils.annotatedBy(a, MatcherType.class)
+				|| AnnotationUtils.annotatedBy(a, CompositeMatcherType.class)
 				|| AnnotationUtils.annotatedBy(a, MatcherContainer.class);
 	}
 
