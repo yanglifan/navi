@@ -21,9 +21,7 @@ import com.github.yanglifan.navi.core.matcher.VersionMatcher;
 import org.junit.Test;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * This tests will not run with Maven.
@@ -58,9 +56,16 @@ public class PerfTests {
 		SimpleSelector selector = new SimpleSelector();
 		selector.setCacheMatcherDefinitions(needCache);
 
-		Set<TestHandler> handlers = new HashSet<>();
-		handlers.add(new V1TestHandler());
-		selector.registerCandidates(TestHandler.class, handlers);
+		selector.registerCandidate(TestHandler.class, new V1TestHandler());
+		selector.registerCandidate(TestHandler.class, new V1_1TestHandler());
+		selector.registerCandidate(TestHandler.class, new V1_2TestHandler());
+		selector.registerCandidate(TestHandler.class, new V1_3TestHandler());
+		selector.registerCandidate(TestHandler.class, new V1_4TestHandler());
+		selector.registerCandidate(TestHandler.class, new V1_5TestHandler());
+		selector.registerCandidate(TestHandler.class, new V1_6TestHandler());
+		selector.registerCandidate(TestHandler.class, new V1_7TestHandler());
+		selector.registerCandidate(TestHandler.class, new V1_8TestHandler());
+		selector.registerCandidate(TestHandler.class, new V1_9TestHandler());
 
 		Map<String, String> req = new HashMap<>();
 		req.put("version", "1.0.0");
@@ -82,6 +87,15 @@ public class PerfTests {
 		selector.setCacheMatcherDefinitions(cache);
 
 		selector.registerCandidate(TestHandler.class, new HelloTestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello1TestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello2TestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello3TestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello4TestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello5TestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello6TestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello7TestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello8TestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello9TestHandler());
 
 		Map<String, String> req = new HashMap<>();
 		req.put("text", "hello");
@@ -102,8 +116,80 @@ public class PerfTests {
 	private class V1TestHandler implements TestHandler {
 	}
 
+	@VersionMatcher(range = "[1.1.0,1.2.0)")
+	private class V1_1TestHandler implements TestHandler {
+	}
+
+	@VersionMatcher(range = "[1.2.0,1.3.0)")
+	private class V1_2TestHandler implements TestHandler {
+	}
+
+	@VersionMatcher(range = "[1.3.0,1.4.0)")
+	private class V1_3TestHandler implements TestHandler {
+	}
+
+	@VersionMatcher(range = "[1.4.0,1.5.0)")
+	private class V1_4TestHandler implements TestHandler {
+	}
+
+	@VersionMatcher(range = "[1.5.0,1.6.0)")
+	private class V1_5TestHandler implements TestHandler {
+	}
+
+	@VersionMatcher(range = "[1.6.0,1.7.0)")
+	private class V1_6TestHandler implements TestHandler {
+	}
+
+	@VersionMatcher(range = "[1.7.0,1.8.0)")
+	private class V1_7TestHandler implements TestHandler {
+	}
+
+	@VersionMatcher(range = "[1.8.0,1.9.0)")
+	private class V1_8TestHandler implements TestHandler {
+	}
+
+	@VersionMatcher(range = "[1.9.0,1.10.0)")
+	private class V1_9TestHandler implements TestHandler {
+	}
+
 	@EqualMatcher(property = "text", value = "hello")
 	private class HelloTestHandler implements TestHandler {
+	}
+
+	@EqualMatcher(property = "text", value = "hello1")
+	private class Hello1TestHandler implements TestHandler {
+	}
+
+	@EqualMatcher(property = "text", value = "hello2")
+	private class Hello2TestHandler implements TestHandler {
+	}
+
+	@EqualMatcher(property = "text", value = "hello3")
+	private class Hello3TestHandler implements TestHandler {
+	}
+
+	@EqualMatcher(property = "text", value = "hello4")
+	private class Hello4TestHandler implements TestHandler {
+	}
+
+	@EqualMatcher(property = "text", value = "hello5")
+	private class Hello5TestHandler implements TestHandler {
+	}
+
+	@EqualMatcher(property = "text", value = "hello6")
+	private class Hello6TestHandler implements TestHandler {
+	}
+
+	@EqualMatcher(property = "text", value = "hello7")
+	private class Hello7TestHandler implements TestHandler {
+	}
+
+	@EqualMatcher(property = "text", value = "hello8")
+	private class Hello8TestHandler implements TestHandler {
+	}
+
+	@EqualMatcher(property = "text", value = "hello9")
+	private class Hello9TestHandler implements TestHandler {
 	}
 }
 
