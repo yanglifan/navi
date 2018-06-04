@@ -268,7 +268,7 @@ public abstract class AbstractSelector implements Selector {
 		this.rejectPolicy = rejectPolicy;
 	}
 
-	public void setEnableCache(boolean enableCache) {
+	void setEnableCache(boolean enableCache) {
 		this.enableCache = enableCache;
 	}
 }
