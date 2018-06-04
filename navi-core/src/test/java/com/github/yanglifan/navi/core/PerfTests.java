@@ -54,7 +54,7 @@ public class PerfTests {
 
 	private void doTestVersionMatcher(boolean needCache) {
 		SimpleSelector selector = new SimpleSelector();
-		selector.setCacheMatcherDefinitions(needCache);
+		selector.setEnableCache(needCache);
 
 		selector.registerCandidate(TestHandler.class, new V1TestHandler());
 		selector.registerCandidate(TestHandler.class, new V1_1TestHandler());
@@ -84,7 +84,7 @@ public class PerfTests {
 
 	private void doEqualMatcherTest(boolean cache) {
 		SimpleSelector selector = new SimpleSelector();
-		selector.setCacheMatcherDefinitions(cache);
+		selector.setEnableCache(cache);
 
 		selector.registerCandidate(TestHandler.class, new HelloTestHandler());
 		selector.registerCandidate(TestHandler.class, new Hello1TestHandler());
