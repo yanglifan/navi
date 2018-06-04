@@ -21,7 +21,7 @@ import com.github.yanglifan.navi.core.alias.AliasFor;
 import com.github.yanglifan.navi.core.exception.InvalidMatcherException;
 import com.github.yanglifan.navi.core.exception.SelectPolicyCreationException;
 import com.github.yanglifan.navi.core.policy.DefaultRejectPolicy;
-import com.github.yanglifan.navi.core.policy.ScoreSelectPolicy;
+import com.github.yanglifan.navi.core.policy.FirstMatchSelectPolicy;
 import com.github.yanglifan.navi.core.util.AnnotationUtils;
 
 import java.lang.annotation.Annotation;
@@ -48,7 +48,7 @@ public abstract class AbstractSelector implements Selector {
 			new ConcurrentHashMap<>();
 
 	public AbstractSelector() {
-		this(ScoreSelectPolicy.class);
+		this(FirstMatchSelectPolicy.class);
 	}
 
 	public AbstractSelector(Class<? extends SelectPolicy> defaultSelectPolicyClass) {
@@ -66,6 +66,10 @@ public abstract class AbstractSelector implements Selector {
 		for (T candidate : candidates) {
 			T result = doMatch(request, candidate, selectPolicy);
 
+			/*
+			 * To fit the quick match mode: If there is a result, return it. With other modes,
+			 * doMatch method will return null, get the result via selectPolicy.getResult().
+			 */
 			if (result != null) {
 				return result;
 			}
@@ -76,6 +80,10 @@ public abstract class AbstractSelector implements Selector {
 
 	private <T> T doMatch(Object request, T candidate, SelectPolicy<T> selectPolicy) {
 		List<MatcherDefinition<?>> matcherDefinitions = readMatcherDefinitions(candidate);
+
+		if (matcherDefinitions.isEmpty()) {
+			return null;
+		}
 
 		for (MatcherDefinition<?> matcherDefinition : matcherDefinitions) {
 			MatchResult matchResult = doMatch(request, matcherDefinition);
@@ -92,7 +100,7 @@ public abstract class AbstractSelector implements Selector {
 			selectPolicy.addMatchResult(matchResult);
 		}
 
-		return selectPolicy.addCandidate(candidate);
+		return selectPolicy.addCandidateAndGetResult(candidate);
 	}
 
 	private List<MatcherDefinition<?>> readMatcherDefinitions(Object candidate) {

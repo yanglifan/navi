@@ -18,6 +18,7 @@ package com.github.yanglifan.navi.core;
 
 import com.github.yanglifan.navi.core.matcher.EqualMatcher;
 import com.github.yanglifan.navi.core.matcher.VersionMatcher;
+import com.github.yanglifan.navi.core.policy.FirstMatchSelectPolicy;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -43,6 +44,39 @@ public class PerfTests {
 	}
 
 	@Test
+	public void test_equals_normal() {
+		Map<String, String> req = new HashMap<>();
+		req.put("text", "hello");
+
+		long start = System.nanoTime();
+		for (int i = 0; i < TEST_COUNT; i++) {
+			if ("hello9".equals(req.get("text"))) {
+				System.out.println("hello9");
+			} else if ("hello8".equals(req.get("text"))) {
+				System.out.println("hello8");
+			} else if ("hello7".equals(req.get("text"))) {
+				System.out.println("hello7");
+			} else if ("hello6".equals(req.get("text"))) {
+				System.out.println("hello6");
+			} else if ("hello5".equals(req.get("text"))) {
+				System.out.println("hello5");
+			} else if ("hello4".equals(req.get("text"))) {
+				System.out.println("hello4");
+			} else if ("hello3".equals(req.get("text"))) {
+				System.out.println("hello3");
+			} else if ("hello2".equals(req.get("text"))) {
+				System.out.println("hello2");
+			} else if ("hello1".equals(req.get("text"))) {
+				System.out.println("hello1");
+			} else if ("hello".equals(req.get("text"))) {
+				// do nothing
+			}
+		}
+		long total = System.nanoTime() - start;
+		System.out.println("Per test_equals_normal cost: " + total / TEST_COUNT + "ns");
+	}
+
+	@Test
 	public void test_equals_matcher() {
 		doEqualMatcherTest(false);
 	}
@@ -53,7 +87,7 @@ public class PerfTests {
 	}
 
 	private void doTestVersionMatcher(boolean needCache) {
-		SimpleSelector selector = new SimpleSelector();
+		SimpleSelector selector = new SimpleSelector(FirstMatchSelectPolicy.class);
 		selector.setEnableCache(needCache);
 
 		selector.registerCandidate(TestHandler.class, new V1TestHandler());
@@ -99,6 +133,7 @@ public class PerfTests {
 
 		Map<String, String> req = new HashMap<>();
 		req.put("text", "hello");
+		selector.select(req, TestHandler.class);
 
 		long start = System.nanoTime();
 		for (int i = 0; i < TEST_COUNT; i++) {

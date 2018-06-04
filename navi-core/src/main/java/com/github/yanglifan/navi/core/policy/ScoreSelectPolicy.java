@@ -45,7 +45,7 @@ public class ScoreSelectPolicy<T> implements SelectPolicy<T> {
 	}
 
 	@Override
-	public T addCandidate(T candidate) {
+	public T addCandidateAndGetResult(T candidate) {
 		if (currentResult == null) {
 			return null;
 		}

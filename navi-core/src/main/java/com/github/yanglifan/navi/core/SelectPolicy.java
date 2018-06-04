@@ -22,7 +22,7 @@ package com.github.yanglifan.navi.core;
 public interface SelectPolicy<T> {
 	void addMatchResult(MatchResult matchResult);
 
-	T addCandidate(T candidate);
+	T addCandidateAndGetResult(T candidate);
 
 	T getResult();
 }
