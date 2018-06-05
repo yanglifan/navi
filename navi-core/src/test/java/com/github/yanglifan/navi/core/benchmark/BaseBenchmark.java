@@ -27,21 +27,16 @@ import java.util.function.Supplier;
 /**
  * @author Yang Lifan
  */
-public abstract class BaseBenchmark {
-	protected int testCount = 1000000;
+abstract class BaseBenchmark {
+	int testCount = 1000000;
 	private int threadNumber = Runtime.getRuntime().availableProcessors();
 
 	private ExecutorService executor = Executors.newFixedThreadPool(threadNumber);
 
-	public BaseBenchmark() {
+	BaseBenchmark() {
 	}
 
-	public BaseBenchmark(int threadNumber, int testCount) {
-		this.threadNumber = threadNumber;
-		this.testCount = testCount;
-	}
-
-	protected long doBenchmark(Supplier<Map<String, String>> requestSupplier,
+	long doBenchmark(Supplier<Map<String, String>> requestSupplier,
 			Consumer<Map<String, String>> benchmarkExecutor) throws InterruptedException {
 		Map<String, String> req = requestSupplier.get();
 
@@ -66,5 +61,4 @@ public abstract class BaseBenchmark {
 
 		return totalCost.get() / testCount;
 	}
-
 }

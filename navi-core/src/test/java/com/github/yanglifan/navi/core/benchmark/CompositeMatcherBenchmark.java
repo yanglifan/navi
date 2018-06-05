@@ -32,6 +32,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SuppressWarnings("all")
 public class CompositeMatcherBenchmark extends BaseBenchmark {
+	private static final int SLOW_TIMES = 30;
+
 	@Test
 	public void benchmark() throws Exception {
 		SimpleSelector selector = new SimpleSelector(FirstMatchSelectPolicy.class);
@@ -47,7 +49,7 @@ public class CompositeMatcherBenchmark extends BaseBenchmark {
 		long standard = doBenchmark(this::platformIsAndroid, this::standardBenchmark);
 		System.out.println(standard);
 		long times = cost / standard;
-		assertThat(times).isLessThan(25);
+		assertThat(times).isLessThan(SLOW_TIMES);
 	}
 
 	@SuppressWarnings("all")
