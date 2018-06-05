@@ -38,7 +38,7 @@ public class MatcherDefinition<A extends Annotation> {
 	private String aliasLabel;
 	private Map<String, String[]> aliasAttributes;
 
-	private volatile MatcherProcessor<A> cachedProcessor;
+	private volatile MatcherProcessor<A> processor;
 
 	MatcherDefinition(A matcher) {
 		this.matcher = matcher;
@@ -77,11 +77,11 @@ public class MatcherDefinition<A extends Annotation> {
 		return matcher;
 	}
 
-	MatcherProcessor<A> getCachedProcessor() {
-		return cachedProcessor;
+	MatcherProcessor<A> getProcessor() {
+		return processor;
 	}
 
-	void setCachedProcessor(MatcherProcessor<A> cachedProcessor) {
-		this.cachedProcessor = cachedProcessor;
+	void setProcessor(MatcherProcessor<A> cachedProcessor) {
+		this.processor = cachedProcessor;
 	}
 }

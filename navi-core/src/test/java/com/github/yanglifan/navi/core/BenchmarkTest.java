@@ -19,76 +19,122 @@ package com.github.yanglifan.navi.core;
 import com.github.yanglifan.navi.core.matcher.EqualMatcher;
 import com.github.yanglifan.navi.core.matcher.VersionMatcher;
 import com.github.yanglifan.navi.core.policy.FirstMatchSelectPolicy;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * This tests will not run with Maven.
- *
  * @author Yang Lifan
  */
-public class PerfTests {
+public class BenchmarkTest {
 
 	private static final int TEST_COUNT = 1000000;
+	private ExecutorService executor = Executors.newFixedThreadPool(100);
+	private SimpleSelector selector;
+
+	@Before
+	public void setUp() {
+		selector = new SimpleSelector();
+	}
+
+	@Test
+	public void doEqualMatchBenchmark() throws Exception {
+		selector.registerCandidate(TestHandler.class, new HelloTestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello1TestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello2TestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello3TestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello4TestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello5TestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello6TestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello7TestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello8TestHandler());
+		selector.registerCandidate(TestHandler.class, new Hello9TestHandler());
+
+		long standardCost = doStandardEqualMatchBenchmark();
+		long cost = doBenchmark(this::textIsHello, req -> selector.select(req, TestHandler.class));
+		long times = cost / standardCost;
+		System.out.println("Single EqualMatcher is slower " + times + " times");
+		assertThat(times).isLessThan(25);
+	}
+
+	private Map<String, String> textIsHello() {
+		Map<String, String> req = new HashMap<>();
+		req.put("text", "hello");
+		return req;
+	}
 
 	@Test
 	public void test_version_matcher() {
-		doTestVersionMatcher(false);
+		doTestVersionMatcher();
 	}
 
-	@Test
-	public void test_version_matcher_cached() {
-		doTestVersionMatcher(true);
+	private long doStandardEqualMatchBenchmark() throws InterruptedException {
+		return doBenchmark(this::textIsHello, this::doSingleStandardBenchmark);
 	}
 
-	@Test
-	public void test_equals_normal() {
-		Map<String, String> req = new HashMap<>();
-		req.put("text", "hello");
+	private long doBenchmark(Supplier<Map<String, String>> requestSupplier,
+			Consumer<Map<String, String>> benchmarkExecutor) throws InterruptedException {
+		Map<String, String> req = requestSupplier.get();
 
-		long start = System.nanoTime();
-		for (int i = 0; i < TEST_COUNT; i++) {
-			if ("hello9".equals(req.get("text"))) {
-				System.out.println("hello9");
-			} else if ("hello8".equals(req.get("text"))) {
-				System.out.println("hello8");
-			} else if ("hello7".equals(req.get("text"))) {
-				System.out.println("hello7");
-			} else if ("hello6".equals(req.get("text"))) {
-				System.out.println("hello6");
-			} else if ("hello5".equals(req.get("text"))) {
-				System.out.println("hello5");
-			} else if ("hello4".equals(req.get("text"))) {
-				System.out.println("hello4");
-			} else if ("hello3".equals(req.get("text"))) {
-				System.out.println("hello3");
-			} else if ("hello2".equals(req.get("text"))) {
-				System.out.println("hello2");
-			} else if ("hello1".equals(req.get("text"))) {
-				System.out.println("hello1");
-			} else if ("hello".equals(req.get("text"))) {
-				// do nothing
-			}
+		// Warm up
+		for (int i = 0; i < 100; i++) {
+			benchmarkExecutor.accept(req);
 		}
-		long total = System.nanoTime() - start;
-		System.out.println("Per test_equals_normal cost: " + total / TEST_COUNT + "ns");
+
+		CountDownLatch countDownLatch = new CountDownLatch(TEST_COUNT);
+		AtomicLong totalCost = new AtomicLong();
+		for (int i = 0; i < TEST_COUNT; i++) {
+			executor.execute(() -> {
+				long start = System.nanoTime();
+				benchmarkExecutor.accept(req);
+				long cost = System.nanoTime() - start;
+				totalCost.addAndGet(cost);
+				countDownLatch.countDown();
+			});
+		}
+
+		countDownLatch.await();
+
+		return totalCost.get() / TEST_COUNT;
 	}
 
-	@Test
-	public void test_equals_matcher() {
-		doEqualMatcherTest(false);
+	@SuppressWarnings("all")
+	private void doSingleStandardBenchmark(Map<String, String> req) {
+		if ("hello9".equals(req.get("text"))) {
+			System.out.println("hello9");
+		} else if ("hello8".equals(req.get("text"))) {
+			System.out.println("hello8");
+		} else if ("hello7".equals(req.get("text"))) {
+			System.out.println("hello7");
+		} else if ("hello6".equals(req.get("text"))) {
+			System.out.println("hello6");
+		} else if ("hello5".equals(req.get("text"))) {
+			System.out.println("hello5");
+		} else if ("hello4".equals(req.get("text"))) {
+			System.out.println("hello4");
+		} else if ("hello3".equals(req.get("text"))) {
+			System.out.println("hello3");
+		} else if ("hello2".equals(req.get("text"))) {
+			System.out.println("hello2");
+		} else if ("hello1".equals(req.get("text"))) {
+			System.out.println("hello1");
+		} else if ("hello".equals(req.get("text"))) {
+			// Do nothing, just do select
+		}
 	}
 
-	@Test
-	public void test_equals_matcher_cached() {
-		doEqualMatcherTest(true);
-	}
-
-	private void doTestVersionMatcher(boolean needCache) {
+	private void doTestVersionMatcher() {
 		SimpleSelector selector = new SimpleSelector(FirstMatchSelectPolicy.class);
-		selector.setEnableCache(needCache);
 
 		selector.registerCandidate(TestHandler.class, new V1TestHandler());
 		selector.registerCandidate(TestHandler.class, new V1_1TestHandler());
@@ -114,34 +160,6 @@ public class PerfTests {
 
 		long total = System.nanoTime() - start;
 		System.out.println("Per Version Match cost: " + total / TEST_COUNT + "ns");
-	}
-
-	private void doEqualMatcherTest(boolean cache) {
-		SimpleSelector selector = new SimpleSelector();
-		selector.setEnableCache(cache);
-
-		selector.registerCandidate(TestHandler.class, new HelloTestHandler());
-		selector.registerCandidate(TestHandler.class, new Hello1TestHandler());
-		selector.registerCandidate(TestHandler.class, new Hello2TestHandler());
-		selector.registerCandidate(TestHandler.class, new Hello3TestHandler());
-		selector.registerCandidate(TestHandler.class, new Hello4TestHandler());
-		selector.registerCandidate(TestHandler.class, new Hello5TestHandler());
-		selector.registerCandidate(TestHandler.class, new Hello6TestHandler());
-		selector.registerCandidate(TestHandler.class, new Hello7TestHandler());
-		selector.registerCandidate(TestHandler.class, new Hello8TestHandler());
-		selector.registerCandidate(TestHandler.class, new Hello9TestHandler());
-
-		Map<String, String> req = new HashMap<>();
-		req.put("text", "hello");
-		selector.select(req, TestHandler.class);
-
-		long start = System.nanoTime();
-		for (int i = 0; i < TEST_COUNT; i++) {
-			selector.select(req, TestHandler.class);
-		}
-
-		long total = System.nanoTime() - start;
-		System.out.println("Per Equals Match cost: " + total / TEST_COUNT + "ns");
 	}
 
 	interface TestHandler {

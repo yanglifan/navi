@@ -43,8 +43,7 @@ public abstract class AbstractSelector implements Selector {
 
 	private RejectPolicy rejectPolicy = new DefaultRejectPolicy();
 
-	private boolean enableCache = true;
-	private ConcurrentMap<Object, List<MatcherDefinition<?>>> matcherDefinitionCache =
+	private ConcurrentMap<Object, List<MatcherDefinition<?>>> matcherDefinitionsMap =
 			new ConcurrentHashMap<>();
 
 	public AbstractSelector() {
@@ -104,12 +103,7 @@ public abstract class AbstractSelector implements Selector {
 	}
 
 	private List<MatcherDefinition<?>> readMatcherDefinitions(Object candidate) {
-		if (enableCache) {
-			return matcherDefinitionCache
-					.computeIfAbsent(candidate, this::doReadMatcherDefinitions);
-		} else {
-			return doReadMatcherDefinitions(candidate);
-		}
+		return matcherDefinitionsMap.computeIfAbsent(candidate, this::doReadMatcherDefinitions);
 	}
 
 	private List<MatcherDefinition<?>> doReadMatcherDefinitions(Object candidate) {
@@ -240,15 +234,13 @@ public abstract class AbstractSelector implements Selector {
 
 	@SuppressWarnings("unchecked")
 	private MatchResult doMatch(Object request, MatcherDefinition matcherDefinition) {
-		MatcherProcessor matcherProcessor = matcherDefinition.getCachedProcessor();
+		MatcherProcessor matcherProcessor = matcherDefinition.getProcessor();
 
 		if (matcherProcessor == null) {
 			MatcherType matcherType = matcherDefinition.getMatcher().annotationType()
 					.getAnnotation(MatcherType.class);
 			matcherProcessor = getMatcherProcessor(matcherType.processor());
-			if (enableCache) {
-				matcherDefinition.setCachedProcessor(matcherProcessor);
-			}
+			matcherDefinition.setProcessor(matcherProcessor);
 		}
 
 		if (matcherProcessor == null) {
@@ -274,9 +266,5 @@ public abstract class AbstractSelector implements Selector {
 
 	public void setRejectPolicy(RejectPolicy rejectPolicy) {
 		this.rejectPolicy = rejectPolicy;
-	}
-
-	void setEnableCache(boolean enableCache) {
-		this.enableCache = enableCache;
 	}
 }
