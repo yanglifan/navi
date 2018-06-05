@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.github.yanglifan.navi.core;
+package com.github.yanglifan.navi.core.benchmark;
 
+import com.github.yanglifan.navi.core.SimpleSelector;
 import com.github.yanglifan.navi.core.matcher.EqualMatcher;
 import com.github.yanglifan.navi.core.matcher.VersionMatcher;
 import com.github.yanglifan.navi.core.policy.FirstMatchSelectPolicy;
@@ -24,22 +25,14 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Yang Lifan
  */
-public class Benchmark {
+public class EqualMatcherBenchmark extends BaseBenchmark {
 
-	private static final int TEST_COUNT = 1000000;
-	private ExecutorService executor = Executors.newFixedThreadPool(100);
 	private SimpleSelector selector;
 
 	@Before
@@ -61,10 +54,17 @@ public class Benchmark {
 		selector.registerCandidate(TestHandler.class, new Hello9TestHandler());
 
 		long standardCost = doStandardEqualMatchBenchmark();
+		System.out.println(standardCost);
 		long cost = doBenchmark(this::textIsHello, req -> selector.select(req, TestHandler.class));
+		System.out.println(cost);
 		long times = cost / standardCost;
 		System.out.println("Single EqualMatcher is slower " + times + " times");
 		assertThat(times).isLessThan(25);
+	}
+
+	@Test
+	public void test_version_matcher() {
+		doTestVersionMatcher();
 	}
 
 	private Map<String, String> textIsHello() {
@@ -73,39 +73,8 @@ public class Benchmark {
 		return req;
 	}
 
-	@Test
-	public void test_version_matcher() {
-		doTestVersionMatcher();
-	}
-
 	private long doStandardEqualMatchBenchmark() throws InterruptedException {
 		return doBenchmark(this::textIsHello, this::doSingleStandardBenchmark);
-	}
-
-	private long doBenchmark(Supplier<Map<String, String>> requestSupplier,
-			Consumer<Map<String, String>> benchmarkExecutor) throws InterruptedException {
-		Map<String, String> req = requestSupplier.get();
-
-		// Warm up
-		for (int i = 0; i < 100; i++) {
-			benchmarkExecutor.accept(req);
-		}
-
-		CountDownLatch countDownLatch = new CountDownLatch(TEST_COUNT);
-		AtomicLong totalCost = new AtomicLong();
-		for (int i = 0; i < TEST_COUNT; i++) {
-			executor.execute(() -> {
-				long start = System.nanoTime();
-				benchmarkExecutor.accept(req);
-				long cost = System.nanoTime() - start;
-				totalCost.addAndGet(cost);
-				countDownLatch.countDown();
-			});
-		}
-
-		countDownLatch.await();
-
-		return totalCost.get() / TEST_COUNT;
 	}
 
 	@SuppressWarnings("all")
@@ -153,13 +122,13 @@ public class Benchmark {
 
 		String baseVersion = "1.0.";
 		long start = System.nanoTime();
-		for (int i = 0; i < TEST_COUNT; i++) {
+		for (int i = 0; i < testCount; i++) {
 			req.put("version", baseVersion + i);
 			selector.select(req, TestHandler.class);
 		}
 
 		long total = System.nanoTime() - start;
-		System.out.println("Per Version Match cost: " + total / TEST_COUNT + "ns");
+		System.out.println("Per Version Match cost: " + total / testCount + "ns");
 	}
 
 	interface TestHandler {
