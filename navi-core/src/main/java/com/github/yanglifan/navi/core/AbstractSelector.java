@@ -21,7 +21,7 @@ import com.github.yanglifan.navi.core.alias.AliasFor;
 import com.github.yanglifan.navi.core.exception.InvalidMatcherException;
 import com.github.yanglifan.navi.core.exception.SelectPolicyCreationException;
 import com.github.yanglifan.navi.core.policy.DefaultRejectPolicy;
-import com.github.yanglifan.navi.core.policy.ScoreSelectPolicy;
+import com.github.yanglifan.navi.core.policy.FirstMatchSelectPolicy;
 import com.github.yanglifan.navi.core.util.AnnotationUtils;
 
 import java.lang.annotation.Annotation;
@@ -30,6 +30,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -38,10 +40,14 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractSelector implements Selector {
 	protected Class<? extends SelectPolicy> defaultSelectPolicyClass;
+
 	private RejectPolicy rejectPolicy = new DefaultRejectPolicy();
 
+	private ConcurrentMap<Object, List<MatcherDefinition<?>>> matcherDefinitionsMap =
+			new ConcurrentHashMap<>();
+
 	public AbstractSelector() {
-		this(ScoreSelectPolicy.class);
+		this(FirstMatchSelectPolicy.class);
 	}
 
 	public AbstractSelector(Class<? extends SelectPolicy> defaultSelectPolicyClass) {
@@ -59,6 +65,10 @@ public abstract class AbstractSelector implements Selector {
 		for (T candidate : candidates) {
 			T result = doMatch(request, candidate, selectPolicy);
 
+			/*
+			 * To fit the quick match mode: If there is a result, return it. With other modes,
+			 * doMatch method will return null, get the result via selectPolicy.getResult().
+			 */
 			if (result != null) {
 				return result;
 			}
@@ -68,9 +78,11 @@ public abstract class AbstractSelector implements Selector {
 	}
 
 	private <T> T doMatch(Object request, T candidate, SelectPolicy<T> selectPolicy) {
-		List<MatcherDefinition<?>> matcherDefinitions = new ArrayList<>();
+		List<MatcherDefinition<?>> matcherDefinitions = readMatcherDefinitions(candidate);
 
-		readMatcherDefinitions(candidate, matcherDefinitions);
+		if (matcherDefinitions.isEmpty()) {
+			return null;
+		}
 
 		for (MatcherDefinition<?> matcherDefinition : matcherDefinitions) {
 			MatchResult matchResult = doMatch(request, matcherDefinition);
@@ -87,7 +99,17 @@ public abstract class AbstractSelector implements Selector {
 			selectPolicy.addMatchResult(matchResult);
 		}
 
-		return selectPolicy.addCandidate(candidate);
+		return selectPolicy.addCandidateAndGetResult(candidate);
+	}
+
+	private List<MatcherDefinition<?>> readMatcherDefinitions(Object candidate) {
+		return matcherDefinitionsMap.computeIfAbsent(candidate, this::doReadMatcherDefinitions);
+	}
+
+	private List<MatcherDefinition<?>> doReadMatcherDefinitions(Object candidate) {
+		List<MatcherDefinition<?>> definitions = new ArrayList<>();
+		readMatcherDefinitions(candidate, definitions);
+		return definitions;
 	}
 
 	private void readMatcherDefinitions(Object candidate,
@@ -137,7 +159,8 @@ public abstract class AbstractSelector implements Selector {
 	}
 
 	private Predicate<Annotation> isMatcher() {
-		return a -> AnnotationUtils.annotatedBy(a, MatcherType.class) || AnnotationUtils.annotatedBy(a, CompositeMatcherType.class)
+		return a -> AnnotationUtils.annotatedBy(a, MatcherType.class)
+				|| AnnotationUtils.annotatedBy(a, CompositeMatcherType.class)
 				|| AnnotationUtils.annotatedBy(a, MatcherContainer.class);
 	}
 
@@ -211,10 +234,14 @@ public abstract class AbstractSelector implements Selector {
 
 	@SuppressWarnings("unchecked")
 	private MatchResult doMatch(Object request, MatcherDefinition matcherDefinition) {
-		MatcherType matcherType =
-				matcherDefinition.getMatcher().annotationType().getAnnotation(MatcherType.class);
+		MatcherProcessor matcherProcessor = matcherDefinition.getProcessor();
 
-		MatcherProcessor matcherProcessor = getMatcherProcessor(matcherType.processor());
+		if (matcherProcessor == null) {
+			MatcherType matcherType = matcherDefinition.getMatcher().annotationType()
+					.getAnnotation(MatcherType.class);
+			matcherProcessor = getMatcherProcessor(matcherType.processor());
+			matcherDefinition.setProcessor(matcherProcessor);
+		}
 
 		if (matcherProcessor == null) {
 			throw new NullPointerException("Cannot find the matcher processor");

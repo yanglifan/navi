@@ -29,6 +29,14 @@ import java.util.Set;
 public class SimpleSelector extends AbstractSelector {
 	private Map<Class<?>, Set> candidatesByType = new HashMap<>();
 
+	public SimpleSelector() {
+		super();
+	}
+
+	public SimpleSelector(Class<? extends SelectPolicy> defaultSelectPolicyClass) {
+		super(defaultSelectPolicyClass);
+	}
+
 	@SuppressWarnings("unchecked")
 	public void registerCandidates(Class<?> candidateType, Set candidates) {
 		Collection existed = this.candidatesByType.get(candidateType);

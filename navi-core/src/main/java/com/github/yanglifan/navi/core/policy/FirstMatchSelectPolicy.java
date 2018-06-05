@@ -30,7 +30,7 @@ public class FirstMatchSelectPolicy<T> implements SelectPolicy<T> {
 	}
 
 	@Override
-	public T addCandidate(T candidate) {
+	public T addCandidateAndGetResult(T candidate) {
 		return candidate;
 	}
 
