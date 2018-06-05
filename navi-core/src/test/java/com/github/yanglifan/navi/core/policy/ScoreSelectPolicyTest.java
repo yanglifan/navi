@@ -16,6 +16,7 @@
 
 package com.github.yanglifan.navi.core.policy;
 
+import com.github.yanglifan.navi.core.Handler;
 import com.github.yanglifan.navi.core.SimpleSelector;
 import com.github.yanglifan.navi.core.matcher.EqualMatcher;
 import org.junit.Test;
@@ -50,6 +51,15 @@ public class ScoreSelectPolicyTest {
 		assertThat(handler).isInstanceOf(CH3.class);
 	}
 
+	@Test
+	public void select_none_when_no_matcher() {
+		SimpleSelector selector = new SimpleSelector();
+		selector.registerCandidate(Handler.class, new NoAnnoHandler());
+
+		Handler handler = selector.select(new Object(), Handler.class);
+		assertThat(handler).isNull();
+	}
+
 	interface ComparableHandler<T> extends Comparable<T> {
 		int order();
 	}
@@ -79,6 +89,10 @@ public class ScoreSelectPolicyTest {
 		public int order() {
 			return 3;
 		}
+	}
+
+	@SuppressWarnings("all")
+	class NoAnnoHandler implements Handler {
 	}
 
 	abstract class AbstractComparableHandler implements ComparableHandler<ComparableHandler> {
