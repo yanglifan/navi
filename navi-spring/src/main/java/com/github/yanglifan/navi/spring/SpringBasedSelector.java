@@ -27,6 +27,14 @@ import org.springframework.context.ApplicationContextAware;
 public class SpringBasedSelector extends AbstractSelector implements ApplicationContextAware {
 	private ApplicationContext applicationContext;
 
+	public SpringBasedSelector() {
+		super();
+	}
+
+	public SpringBasedSelector(Class<? extends SelectPolicy> defaultSelectPolicyClass) {
+		super(defaultSelectPolicyClass);
+	}
+
 	@Override
 	protected MatcherProcessor getMatcherProcessor(Class<? extends MatcherProcessor> processorClass) {
 		return applicationContext.getBean(processorClass);
@@ -41,10 +49,6 @@ public class SpringBasedSelector extends AbstractSelector implements Application
 		this.applicationContext = applicationContext;
 	}
 
-	/**
-	 * @param <T>
-	 * @return
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	protected <T> SelectPolicy<T> createSelectPolicy() {
