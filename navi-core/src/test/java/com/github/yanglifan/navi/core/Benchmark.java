@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Yang Lifan
  */
-public class BenchmarkTest {
+public class Benchmark {
 
 	private static final int TEST_COUNT = 1000000;
 	private ExecutorService executor = Executors.newFixedThreadPool(100);
