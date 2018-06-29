@@ -10,7 +10,7 @@
 
     <groupId>com.github.yanglifan.navi</groupId>
     <artifactId>navi</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
 
     <name>Navi</name>
     <description>Navi: Annotation Based Component Selector</description>
