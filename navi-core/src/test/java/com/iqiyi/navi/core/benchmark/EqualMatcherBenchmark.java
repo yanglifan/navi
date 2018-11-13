@@ -76,6 +76,7 @@ public class EqualMatcherBenchmark extends BaseBenchmark {
 		throw new RuntimeException("Benchmark test failed. Slow times is " + times);
 	}
 
+	@Ignore
 	@Test
 	public void test_version_matcher() {
 		doTestVersionMatcher();
