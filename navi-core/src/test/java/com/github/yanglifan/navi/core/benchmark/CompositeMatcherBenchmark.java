@@ -20,6 +20,7 @@ import com.github.yanglifan.navi.core.Handler;
 import com.github.yanglifan.navi.core.PlatformMatcher;
 import com.github.yanglifan.navi.core.SimpleSelector;
 import com.github.yanglifan.navi.core.policy.FirstMatchSelectPolicy;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CompositeMatcherBenchmark extends BaseBenchmark {
 	private static final int SLOW_TIMES = 30;
 
+	@Ignore
 	@Test
 	public void benchmark() throws Exception {
 		SimpleSelector selector = new SimpleSelector(FirstMatchSelectPolicy.class);

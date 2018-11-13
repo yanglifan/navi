@@ -22,6 +22,7 @@ import com.github.yanglifan.navi.core.matcher.VersionMatcher;
 import com.github.yanglifan.navi.core.policy.FirstMatchSelectPolicy;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -43,6 +44,7 @@ public class EqualMatcherBenchmark extends BaseBenchmark {
 		selector = new SimpleSelector();
 	}
 
+	@Ignore
 	@Test
 	public void doEqualMatchBenchmark() throws Exception {
 		selector.registerCandidate(TestHandler.class, new HelloTestHandler());
@@ -74,6 +76,7 @@ public class EqualMatcherBenchmark extends BaseBenchmark {
 		throw new RuntimeException("Benchmark test failed. Slow times is " + times);
 	}
 
+	@Ignore
 	@Test
 	public void test_version_matcher() {
 		doTestVersionMatcher();
